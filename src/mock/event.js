@@ -46,14 +46,17 @@ const generateEvent = () => {
   const description = new Array(getRandomInteger(MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH)).fill().map(generateDescription);
   const photos = new Array(getRandomInteger(MIN_PHOTOS_LENGTH, MAX_PHOTOS_LENGTH)).fill().map(generatePhotos);
   const timeStart = dayjs().add(getRandomInteger(-MAX_DAY_GAP, MAX_DAY_GAP), 'day');
-  const timeEnd = dayjs(timeStart).add(getRandomInteger(MIN_TIME_GAP, MAX_TIME_GAP), 'minutes');
+  const timeEnd = dayjs(timeStart).add(getRandomInteger(MIN_TIME_GAP, MAX_TIME_GAP), 'minute');
+  const duration = dayjs(timeEnd).diff(timeStart);
+  const isFavorite = Boolean(getRandomInteger(0, 1));
   return {
     type: getRandomItem(TYPE),
     city: getRandomItem(CITIES),
     timeStart,
     timeEnd,
-    duration: 1,
+    duration,
     cost: getRandomInteger(MIN_COST, MAX_COST),
+    isFavorite,
     destination: {
       description,
       photos,
