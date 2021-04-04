@@ -1,4 +1,5 @@
 import {EVENTS_COUNT} from './const';
+import {render} from './utils/utils';
 import {createTripInfo} from './view/info';
 import {createTripNav} from './view/navigation';
 import {createTripFilters} from './view/filters';
@@ -7,10 +8,10 @@ import {createEventsBord} from './view/board';
 import {createEditEventForm} from './view/edit-event';
 import {createAddEventForm} from './view/add-event';
 import {createEvent} from './view/event';
+import {generateEvent} from './mock/event';
 
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
+const events = new Array(EVENTS_COUNT).fill().map(generateEvent);
+console.log(events);
 
 const headerContainer = document.querySelector('.page-header');
 const tripMainContainer = headerContainer.querySelector('.trip-main');
