@@ -1,6 +1,7 @@
 import {EVENTS_COUNT} from './const';
 import {render} from './utils/utils';
 import {createTripInfo} from './view/info';
+import {createTripCost} from './view/cost';
 import {createTripNav} from './view/navigation';
 import {createTripFilters} from './view/filters';
 import {createEventsSorting} from './view/sorting';
@@ -11,12 +12,15 @@ import {createEvent} from './view/event';
 import {generateEvent} from './mock/event';
 
 const events = new Array(EVENTS_COUNT).fill().map(generateEvent);
-console.log(events);
+// console.log(events);
 
 const headerContainer = document.querySelector('.page-header');
 const tripMainContainer = headerContainer.querySelector('.trip-main');
-const tripInfoElement = createTripInfo();
+const tripInfoElement = createTripInfo(events);
 render (tripMainContainer, tripInfoElement, 'afterbegin');
+const tripInfoContainer = tripMainContainer.querySelector('.trip-info');
+const tripCostElement = createTripCost(events);
+render (tripInfoContainer, tripCostElement, 'beforeend');
 
 const tripNavContainer = headerContainer.querySelector('.trip-controls__navigation');
 const tripNavElement = createTripNav();
@@ -37,10 +41,10 @@ const eventsBoardContainer = mainContainer.querySelector('.trip-events__list');
 const editEventFormElement = createEditEventForm();
 render(eventsBoardContainer, editEventFormElement, 'afterbegin');
 
-for (let i = 0; i < EVENTS_COUNT; i++) {
-  const eventElement = createEvent();
+events.forEach((event) => {
+  const eventElement = createEvent(event);
   render(eventsBoardContainer, eventElement, 'beforeend');
-}
+});
 
 const addEventFormElement = createAddEventForm();
 render(eventsBoardContainer, addEventFormElement, 'beforeend');
