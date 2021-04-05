@@ -12,7 +12,7 @@ import {createEvent} from './view/event';
 import {generateEvent} from './mock/event';
 
 const events = new Array(EVENTS_COUNT).fill().map(generateEvent);
-// console.log(events);
+console.log(events);
 
 const headerContainer = document.querySelector('.page-header');
 const tripMainContainer = headerContainer.querySelector('.trip-main');
@@ -38,7 +38,7 @@ const eventsBoardElement = createEventsBord();
 render(eventsContainer, eventsBoardElement, 'beforeend');
 
 const eventsBoardContainer = mainContainer.querySelector('.trip-events__list');
-const editEventFormElement = createEditEventForm();
+const editEventFormElement = createEditEventForm(events[0]);
 render(eventsBoardContainer, editEventFormElement, 'afterbegin');
 
 events.forEach((event) => {

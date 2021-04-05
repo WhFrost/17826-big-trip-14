@@ -5,7 +5,7 @@ import {
   getRandomItem
 } from '../utils/utils';
 
-const TYPE = ['Taxi', 'Bus', 'Train', 'Ship', 'Transport', 'Drive', 'Flight'];
+const TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Transport', 'Drive', 'Flight'];
 const CITIES = ['Praga', 'Moscow', 'Riga', 'Samara', 'Munchen', 'Berlin'];
 const MIN_COST = 10;
 const MAX_COST = 1000;
@@ -87,7 +87,7 @@ const generateEvent = () => {
   return {
     id,
     date,
-    type: getRandomItem(TYPE),
+    type: getRandomItem(TYPES),
     city: getRandomItem(CITIES),
     timeStart,
     timeEnd,
@@ -102,5 +102,6 @@ const generateEvent = () => {
   };
 };
 export {
+  TYPES,
   generateEvent
 };
