@@ -46,5 +46,6 @@ events.forEach((event) => {
   render(eventsBoardContainer, eventElement, 'beforeend');
 });
 
+
 const addEventFormElement = createAddEventForm();
 render(eventsBoardContainer, addEventFormElement, 'beforeend');
