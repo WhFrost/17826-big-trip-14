@@ -1,17 +1,14 @@
 import {humanizeDate} from '../utils/utils';
 
-const renderOffers = (offers) => {
-  let str = '';
+const createOffersTemplate = (offers) => {
   if (offers.length > 0) {
-    offers.forEach((offer) => {
-      return str += `<li class="event__offer">
-      <span class="event__offer-title">${offer.name}</span>
-      &plus;&euro;&nbsp;
-      <span class="event__offer-price">${offer.cost}</span>
-    </li>`;
-    });
+    return offers.map((offer) => `<li class="event__offer">
+    <span class="event__offer-title">${offer.name}</span>
+    &plus;&euro;&nbsp;
+    <span class="event__offer-price">${offer.cost}</span>
+  </li>`).join('');
   }
-  return str;
+  return '';
 };
 
 export const createEvent = (event) => {
@@ -23,15 +20,14 @@ export const createEvent = (event) => {
   const formatedTimeEnd = humanizeDate('HH:mm', timeEnd);
 
   const getFormatedDuration = (duration) => {
-    let str = '';
     if (duration % 60 <= 0) {
-      return str =+ duration + 'M';
+      return duration + 'M';
     }
-    return str += Math.trunc(duration / 60) + 'H ' + duration % 60 + 'M';
+    return Math.trunc(duration / 60) + 'H ' + duration % 60 + 'M';
   };
   const formatedDuration = getFormatedDuration(duration);
 
-  const offersList = renderOffers(offers);
+  const offersTemplate = createOffersTemplate(offers);
 
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn--active'
@@ -57,7 +53,7 @@ export const createEvent = (event) => {
     </p>
     <h4 class="visually-hidden">Offers:</h4>
     <ul class="event__selected-offers">
-      ${offersList}
+      ${offersTemplate}
     </ul>
     <button class="event__favorite-btn ${favoriteClassName}" type="button">
       <span class="visually-hidden">Add to favorite</span>

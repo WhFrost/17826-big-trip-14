@@ -1,21 +1,90 @@
-import {TYPES} from '../mock/event';
+import {TYPES, CITIES, OFFERS_LIST} from '../mock/event';
+import {humanizeDate} from '../utils/utils';
 
-const createTypesTemplate = (types) => {
-  let str = '';
-  types.forEach((type) => {
-    return str += `<div class="event__type-item">
-    <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
-    <label class="event__type-label  event__type-label--${type}" for="event-type-taxi-1">${type}</label>
-  </div>`;
-  });
-  return str;
+const createEventTypesTemplate = (currentType, defaultTypes) => {
+  return defaultTypes.map((type) => `<div class="event__type-item">
+    <input id="event-type-${type.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type"
+    value="${type.toLowerCase()}"
+    ${currentType === type ? 'checked' : ''}>
+    <label class="event__type-label  event__type-label--${type.toLowerCase()}" for="event-type-${type.toLowerCase()}-1">${type}</label>
+  </div>`).join('');
 };
 
-const typesTemplate = createTypesTemplate(TYPES);
-console.log(typesTemplate);
+const createCitiesListTemplate = (defaultDestinations) => {
+  return defaultDestinations.reduce((total, current) => total + `<option value="${current}"></option>`, '<datalist id="destination-list-1">') + '</datalist>';
+};
+
+const createTimesTemplate = (timeStart, timeEnd) => {
+  return `<div class="event__field-group  event__field-group--time">
+  <label class="visually-hidden" for="event-start-time-1">From</label>
+  <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time"
+  value="${humanizeDate('DD/MM/YY HH:mm', timeStart)}">
+  &mdash;
+  <label class="visually-hidden" for="event-end-time-1">To</label>
+  <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time"
+  value="${humanizeDate('DD/MM/YY HH:mm', timeEnd)}">
+</div>`;
+};
+
+const createCostTemplate = (cost) => {
+  return `<div class="event__field-group  event__field-group--price">
+  <label class="event__label" for="event-price-1">
+    <span class="visually-hidden">Price</span>
+    &euro;
+  </label>
+  <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${cost}">
+</div>`;
+};
+
+const createOffersTemplate = (offers, availableOffers) => {
+  if (offers.length > 0) {
+    return `<section class="event__section  event__section--offers">
+    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+    <div class="event__available-offers">` +
+      availableOffers.map((offer) => `<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}" type="checkbox" name="event-${offer.id}"
+      ${offers.includes(offer) ? 'checked' : ''}>
+      <label class="event__offer-label" for="event-offer-${offer.id}">
+      <span class="event__offer-title">${offer.name}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${offer.cost}</span>
+      </label>
+      </div>`).join('') +
+    `</div>
+    </section>`;
+  }
+  return '';
+};
+
+const createDestinationTemplate = (description, photos) => {
+  if (description.length > 0 || photos.length > 0) {
+    let str = `<section class="event__section  event__section--destination">
+    <h3 class="event__section-title  event__section-title--destination">Destination</h3>`;
+    if (description.length > 0) {
+      str += description.reduce((total, current) =>
+        total + current + ' ', '<p class="event__destination-description">') + '</p>';
+    }
+    if (photos.length > 0) {
+      str += photos.reduce((total, current) =>
+        total + `<img class="event__photo" src="${current}.jpg" alt="Event photo"></img>`, `<div class="event__photos-container">
+        <div class="event__photos-tape">`) +
+        `</div>
+        </div>`;
+    }
+    return str += '</section>';
+  }
+  return '';
+};
 
 export const createEditEventForm = (event) => {
-  const {type} = event;
+  const {type, city, timeStart, timeEnd, cost, offers, destination} = event;
+  const {description, photos} = destination;
+  const eventTypesTemplate = createEventTypesTemplate(type, TYPES);
+  const citiesListTeplate = createCitiesListTemplate(CITIES);
+  const timesTemplate = createTimesTemplate(timeStart, timeEnd);
+  const costTemplate = createCostTemplate(cost);
+  const offersTemplate = createOffersTemplate(offers, OFFERS_LIST);
+  const destinationTemplate = createDestinationTemplate(description, photos);
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -30,39 +99,20 @@ export const createEditEventForm = (event) => {
         <div class="event__type-list">
           <fieldset class="event__type-group">
             <legend class="visually-hidden">Event type</legend>
-            ${typesTemplate}
+            ${eventTypesTemplate}
           </fieldset>
         </div>
       </div>
 
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-1">
-          Flight
+          ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="Chamonix" list="destination-list-1">
-        <datalist id="destination-list-1">
-          <option value="Amsterdam"></option>
-          <option value="Geneva"></option>
-          <option value="Chamonix"></option>
-        </datalist>
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
+        ${citiesListTeplate}
       </div>
-
-      <div class="event__field-group  event__field-group--time">
-        <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="18/03/19 12:25">
-        &mdash;
-        <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="18/03/19 13:35">
-      </div>
-
-      <div class="event__field-group  event__field-group--price">
-        <label class="event__label" for="event-price-1">
-          <span class="visually-hidden">Price</span>
-          &euro;
-        </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="160">
-      </div>
-
+        ${timesTemplate}
+        ${costTemplate}
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
       <button class="event__reset-btn" type="reset">Delete</button>
       <button class="event__rollup-btn" type="button">
@@ -70,61 +120,11 @@ export const createEditEventForm = (event) => {
       </button>
     </header>
     <section class="event__details">
-      <section class="event__section  event__section--offers">
-        <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
-        <div class="event__available-offers">
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
-            <label class="event__offer-label" for="event-offer-luggage-1">
-              <span class="event__offer-title">Add luggage</span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">50</span>
-            </label>
-          </div>
+        ${offersTemplate}
 
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort" checked>
-            <label class="event__offer-label" for="event-offer-comfort-1">
-              <span class="event__offer-title">Switch to comfort</span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">80</span>
-            </label>
-          </div>
+        ${destinationTemplate}
 
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal">
-            <label class="event__offer-label" for="event-offer-meal-1">
-              <span class="event__offer-title">Add meal</span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">15</span>
-            </label>
-          </div>
-
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-seats-1" type="checkbox" name="event-offer-seats">
-            <label class="event__offer-label" for="event-offer-seats-1">
-              <span class="event__offer-title">Choose seats</span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">5</span>
-            </label>
-          </div>
-
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-1" type="checkbox" name="event-offer-train">
-            <label class="event__offer-label" for="event-offer-train-1">
-              <span class="event__offer-title">Travel by train</span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">40</span>
-            </label>
-          </div>
-        </div>
-      </section>
-
-      <section class="event__section  event__section--destination">
-        <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">Chamonix-Mont-Blanc (usually shortened to Chamonix) is a resort area near the junction of France, Switzerland and Italy. At the base of Mont Blanc, the highest summit in the Alps, it's renowned for its skiing.</p>
-      </section>
     </section>
   </form>
 </li>`;

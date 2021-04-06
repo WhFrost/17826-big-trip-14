@@ -12,7 +12,7 @@ import {createEvent} from './view/event';
 import {generateEvent} from './mock/event';
 
 const events = new Array(EVENTS_COUNT).fill().map(generateEvent);
-console.log(events);
+// console.log(events);
 
 const headerContainer = document.querySelector('.page-header');
 const tripMainContainer = headerContainer.querySelector('.trip-main');
@@ -47,5 +47,5 @@ events.forEach((event) => {
 });
 
 
-const addEventFormElement = createAddEventForm();
+const addEventFormElement = createAddEventForm(events[0]);
 render(eventsBoardContainer, addEventFormElement, 'beforeend');
