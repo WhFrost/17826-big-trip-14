@@ -3,16 +3,13 @@ export const createTripCost = (events) => {
   let offersCost = 0;
   events.forEach((event) => {
     tripCost += event.cost;
-    return tripCost;
-  });
-
-  events.forEach((event) => {
     const {offers} = event;
     if (offers.length !== 0) {
       offers.forEach((offer) => {
         offersCost += offer.cost;
         return offersCost;
       });
+      return tripCost;
     }
   });
 
