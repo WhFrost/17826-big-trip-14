@@ -1,4 +1,4 @@
-import {humanizeDate} from '../utils/utils';
+import {createElement, humanizeDate} from '../utils/utils';
 
 const createTripCities = (events) => {
   if (events.length >= 3) {
@@ -23,7 +23,7 @@ const createTripDates = (events) => {
   return '';
 };
 
-export const createTripInfo = (events) => {
+const createTripInfo = (events) => {
   const cities = createTripCities(events);
   const tripDates = createTripDates(events);
 
@@ -34,3 +34,22 @@ export const createTripInfo = (events) => {
     </div>
     </section>`;
 };
+
+export default class TripInfo {
+  constructor(events) {
+    this._element = null;
+    this._events = events;
+  }
+  getTemplate() {
+    return createTripInfo(this._events);
+  }
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+  removeElement() {
+    this._element = null;
+  }
+}
