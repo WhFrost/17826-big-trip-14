@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import {RenderPosition} from '../const';
 
-const renderElement = (container, element, place) => {
+const render = (container, element, place) => {
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);
@@ -17,10 +17,6 @@ const createElement = (template) => {
   newElement.innerHTML = template; // 2
 
   return newElement.firstChild; // 3
-};
-
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
 };
 
 const getRandomInteger = (min, max) => {
@@ -45,9 +41,8 @@ const sortingEventsByDate = (events) => events.sort((a, b) => {
 });
 
 export {
-  renderElement,
-  createElement,
   render,
+  createElement,
   getRandomInteger,
   getRandomItem,
   humanizeDate,

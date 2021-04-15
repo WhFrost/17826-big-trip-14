@@ -1,4 +1,4 @@
-const EVENTS_COUNT = 3;
+const EVENTS_COUNT = 5;
 
 const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
