@@ -1,4 +1,4 @@
-import {humanizeDate} from '../utils/utils';
+import {humanizeDate, createElement} from '../utils/utils';
 
 const createOffersTemplate = (offers) => {
   if (offers.length > 0) {
@@ -11,10 +11,8 @@ const createOffersTemplate = (offers) => {
   return '';
 };
 
-export const createEvent = (event) => {
-
+const createEvent = (event) => {
   const {date, type, city, timeStart, timeEnd, duration, cost, offers, isFavorite} = event;
-
   const formatedDate = humanizeDate('MMM D', date);
   const formatedTimeStart = humanizeDate('HH:mm', timeStart);
   const formatedTimeEnd = humanizeDate('HH:mm', timeEnd);
@@ -67,3 +65,22 @@ export const createEvent = (event) => {
   </div>
 </li>`;
 };
+
+export default class Event {
+  constructor(events) {
+    this._element = null;
+    this._events = events;
+  }
+  getTemplate() {
+    return createEvent(this._events);
+  }
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+  removeElement() {
+    this._element = null;
+  }
+}

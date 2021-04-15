@@ -1,5 +1,5 @@
 import {TYPES, CITIES, OFFERS_LIST} from '../mock/event';
-import {humanizeDate} from '../utils/utils';
+import {humanizeDate, createElement} from '../utils/utils';
 
 const createEventTypesTemplate = (currentType, defaultTypes) => {
   return defaultTypes.map((type) => `<div class="event__type-item">
@@ -76,7 +76,7 @@ const createDestinationTemplate = (description, photos) => {
   return '';
 };
 
-export const createEditEventForm = (event) => {
+const createEditEventForm = (event) => {
   const {type, city, timeStart, timeEnd, cost, offers, destination} = event;
   const {description, photos} = destination;
   const eventTypesTemplate = createEventTypesTemplate(type, TYPES);
@@ -129,3 +129,22 @@ export const createEditEventForm = (event) => {
   </form>
 </li>`;
 };
+
+export default class EditEvent {
+  constructor(events) {
+    this._element = null;
+    this._events = events;
+  }
+  getTemplate() {
+    return createEditEventForm(this._events);
+  }
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+  removeElement() {
+    this._element = null;
+  }
+}

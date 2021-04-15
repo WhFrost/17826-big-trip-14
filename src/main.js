@@ -4,11 +4,11 @@ import TripInfoView from './view/info';
 import TripCostView from './view/cost';
 import TripNavView from './view/navigation';
 import TripFiltersView from './view/filters';
-import {createEventsSorting} from './view/sorting';
-import {createEventsBord} from './view/board';
-import {createEditEventForm} from './view/edit-event';
-import {createAddEventForm} from './view/add-event';
-import {createEvent} from './view/event';
+import EventsSortingView from './view/sorting';
+import EventsBordView from './view/board';
+import EditEventFormView from './view/edit-event';
+import AddEventFormView from './view/add-event';
+import EventView from './view/event';
 import {generateEvent} from './mock/event';
 
 const events = new Array(EVENTS_COUNT).fill().map(generateEvent);
@@ -34,20 +34,20 @@ renderElement(tripFiltersContainer, tripFiltersComponent.getElement(), RenderPos
 
 const mainContainer = document.querySelector('.page-main');
 const eventsContainer = mainContainer.querySelector('.trip-events');
-const eventsSortingElement = createEventsSorting();
-render(eventsContainer, eventsSortingElement, 'beforeend');
-const eventsBoardElement = createEventsBord();
-render(eventsContainer, eventsBoardElement, 'beforeend');
+const eventsSortingComponent = new EventsSortingView();
+renderElement(eventsContainer, eventsSortingComponent.getElement(), RenderPosition.BEFOREEND);
+const eventsBoardComponent = new EventsBordView();
+renderElement(eventsContainer, eventsBoardComponent.getElement(), RenderPosition.BEFOREEND);
 
 const eventsBoardContainer = mainContainer.querySelector('.trip-events__list');
-const editEventFormElement = createEditEventForm(sortedEvents[0]);
-render(eventsBoardContainer, editEventFormElement, 'afterbegin');
+const editEventFormComponent = new EditEventFormView(sortedEvents[0]);
+renderElement(eventsBoardContainer, editEventFormComponent.getElement(), RenderPosition.AFTERBEGIN);
 
 sortedEvents.forEach((event) => {
-  const eventElement = createEvent(event);
-  render(eventsBoardContainer, eventElement, 'beforeend');
+  const eventComponent = new EventView(event);
+  renderElement(eventsBoardContainer, eventComponent.getElement(), RenderPosition.BEFOREEND);
 });
 
 
-const addEventFormElement = createAddEventForm(sortedEvents[sortedEvents.length-1]);
-render(eventsBoardContainer, addEventFormElement, 'beforeend');
+const addEventFormComponent = new AddEventFormView(sortedEvents[sortedEvents.length-1]);
+renderElement(eventsBoardContainer, addEventFormComponent.getElement(), RenderPosition.BEFOREEND);
