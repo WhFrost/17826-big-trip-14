@@ -1,7 +1,22 @@
 import dayjs from 'dayjs';
+import {RenderPosition} from '../const';
 
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
+const render = (container, element, place) => {
+  switch (place) {
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
+  }
+};
+
+const createElement = (template) => {
+  const newElement = document.createElement('div'); // 1
+  newElement.innerHTML = template; // 2
+
+  return newElement.firstChild; // 3
 };
 
 const getRandomInteger = (min, max) => {
@@ -27,6 +42,7 @@ const sortingEventsByDate = (events) => events.sort((a, b) => {
 
 export {
   render,
+  createElement,
   getRandomInteger,
   getRandomItem,
   humanizeDate,
