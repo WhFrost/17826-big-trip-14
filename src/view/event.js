@@ -1,4 +1,5 @@
-import {humanizeDate, createElement} from '../utils/utils';
+import AbstractView from './abstract';
+import {humanizeDate} from '../utils/event';
 
 const createOffersTemplate = (offers) => {
   if (offers.length > 0) {
@@ -66,21 +67,24 @@ const createEvent = (event) => {
 </li>`;
 };
 
-export default class Event {
+export default class Event extends AbstractView {
   constructor(events) {
-    this._element = null;
+    super();
     this._events = events;
+
+    this._editClickHandler = this._editClickHandler.bind(this);
   }
   getTemplate() {
     return createEvent(this._events);
   }
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
+
+  _editClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editClick();
   }
-  removeElement() {
-    this._element = null;
+
+  setEditClickHandler(callback) {
+    this._callback.editClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editClickHandler);
   }
 }

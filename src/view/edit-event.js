@@ -1,5 +1,6 @@
+import AbstractView from './abstract';
 import {TYPES, CITIES, OFFERS_LIST} from '../mock/event';
-import {humanizeDate, createElement} from '../utils/utils';
+import {humanizeDate} from '../utils/event';
 
 const createEventTypesTemplate = (currentType, defaultTypes) => {
   return defaultTypes.map((type) => `<div class="event__type-item">
@@ -130,21 +131,33 @@ const createEditEventForm = (event) => {
 </li>`;
 };
 
-export default class EditEvent {
+export default class EditEvent extends AbstractView {
   constructor(events) {
-    this._element = null;
+    super();
     this._events = events;
+
+    this._editClickHandler = this._editClickHandler.bind(this);
+    this._editFormSubmitClickHandler = this._editFormSubmitClickHandler.bind(this);
   }
   getTemplate() {
     return createEditEventForm(this._events);
   }
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
+
+  _editClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editClick();
   }
-  removeElement() {
-    this._element = null;
+  _editFormSubmitClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editFormSubmitClick();
+  }
+
+  setEditClickHandler(callback) {
+    this._callback.editClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editClickHandler);
+  }
+  setEditFormSubmitClickHandler(callback) {
+    this._callback.editFormSubmitClick= callback;
+    this.getElement().querySelector('form').addEventListener('submit', this._editFormSubmitClickHandler);
   }
 }

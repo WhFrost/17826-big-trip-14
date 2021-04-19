@@ -1,4 +1,4 @@
-import {createElement} from '../utils/utils';
+import AbstractView from './abstract';
 
 const createLoading = () => {
   return `<p class="trip-events__msg">
@@ -6,20 +6,8 @@ const createLoading = () => {
   </p>`;
 };
 
-export default class Loading {
-  constructor() {
-    this._element = null;
-  }
+export default class Loading extends AbstractView {
   getTemplate() {
     return createLoading();
-  }
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-  removeElement() {
-    this._element = null;
   }
 }
