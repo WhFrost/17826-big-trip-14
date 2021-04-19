@@ -1,5 +1,6 @@
-import {EVENTS_COUNT, RenderPosition} from './const';
-import {render, sortingEventsByDate} from './utils/utils';
+import {EVENTS_COUNT} from './const';
+import {sortingEventsByDate} from './utils/event';
+import {render, RenderPosition, replace} from './utils/render';
 import TripInfoView from './view/info';
 import TripCostView from './view/cost';
 import TripNavView from './view/navigation';
@@ -19,41 +20,41 @@ const tripMainContainer = headerContainer.querySelector('.trip-main');
 
 const tripNavContainer = headerContainer.querySelector('.trip-controls__navigation');
 const tripNavComponent = new TripNavView();
-render(tripNavContainer, tripNavComponent.getElement(), RenderPosition.BEFOREEND);
+render(tripNavContainer, tripNavComponent, RenderPosition.BEFOREEND);
 
 const tripFiltersContainer = headerContainer.querySelector('.trip-controls__filters');
 const tripFiltersComponent = new TripFiltersView();
-render(tripFiltersContainer, tripFiltersComponent.getElement(), RenderPosition.BEFOREEND);
+render(tripFiltersContainer, tripFiltersComponent, RenderPosition.BEFOREEND);
 
 const mainContainer = document.querySelector('.page-main');
 const eventsContainer = mainContainer.querySelector('.trip-events');
 
 if (sortedEvents.length === 0) {
   const noEventsComponent = new NoEventsView();
-  render (eventsContainer, noEventsComponent.getElement(), RenderPosition.BEFOREEND);
+  render (eventsContainer, noEventsComponent, RenderPosition.BEFOREEND);
 } else {
   const tripInfoComponent = new TripInfoView(sortedEvents);
-  render(tripMainContainer, tripInfoComponent.getElement(), RenderPosition.AFTERBEGIN);
+  render(tripMainContainer, tripInfoComponent, RenderPosition.AFTERBEGIN);
 
   const tripInfoContainer = tripMainContainer.querySelector('.trip-info');
   const tripCostComponent = new TripCostView(sortedEvents);
-  render(tripInfoContainer, tripCostComponent.getElement(), RenderPosition.BEFOREEND);
+  render(tripInfoContainer, tripCostComponent, RenderPosition.BEFOREEND);
 
   const eventsSortingComponent = new EventsSortingView();
-  render(eventsContainer, eventsSortingComponent.getElement(), RenderPosition.BEFOREEND);
+  render(eventsContainer, eventsSortingComponent, RenderPosition.BEFOREEND);
   const eventsBoardComponent = new EventsBordView();
-  render(eventsContainer, eventsBoardComponent.getElement(), RenderPosition.BEFOREEND);
+  render(eventsContainer, eventsBoardComponent, RenderPosition.BEFOREEND);
 
   const renderEvent = (eventsContainer, event) => {
     const eventComponent = new EventView(event);
     const editEventFormComponent = new EditEventFormView(event);
-    render(eventsContainer, eventComponent.getElement(), RenderPosition.BEFOREEND);
+    render(eventsContainer, eventComponent, RenderPosition.BEFOREEND);
 
     const replaceEventToEditEventForm = () => {
-      eventsContainer.replaceChild(editEventFormComponent.getElement(), eventComponent.getElement());
+      replace(editEventFormComponent, eventComponent);
     };
     const replaceEditEventFormToEvent = () => {
-      eventsContainer.replaceChild(eventComponent.getElement(), editEventFormComponent.getElement());
+      replace(eventComponent, editEventFormComponent);
     };
 
     const onEscKeyDown = (evt) => {
@@ -77,5 +78,5 @@ if (sortedEvents.length === 0) {
       document.removeEventListener('keydown', onEscKeyDown);
     });
   };
-  sortedEvents.forEach((event) => renderEvent(eventsBoardComponent.getElement(), event));
+  sortedEvents.forEach((event) => renderEvent(eventsBoardComponent, event));
 }

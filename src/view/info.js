@@ -1,5 +1,5 @@
 import AbstractView from './abstract';
-import {humanizeDate} from '../utils/utils';
+import {humanizeDate} from '../utils/event';
 
 const createTripCities = (events) => {
   if (events.length >= 3) {

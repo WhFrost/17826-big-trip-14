@@ -1,5 +1,5 @@
 import AbstractView from './abstract';
-import {humanizeDate} from '../utils/utils';
+import {humanizeDate} from '../utils/event';
 
 const createOffersTemplate = (offers) => {
   if (offers.length > 0) {

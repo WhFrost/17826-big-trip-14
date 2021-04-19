@@ -3,7 +3,7 @@ import {nanoid} from 'nanoid';
 import {
   getRandomInteger,
   getRandomItem
-} from '../utils/utils';
+} from '../utils/common';
 
 const TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Transport', 'Drive', 'Flight'];
 const CITIES = ['Praga', 'Moscow', 'Riga', 'Samara', 'Munchen', 'Berlin'];

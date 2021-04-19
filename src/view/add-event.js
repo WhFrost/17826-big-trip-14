@@ -1,6 +1,6 @@
 import AbstractView from './abstract';
 import {TYPES, CITIES, OFFERS_LIST} from '../mock/event';
-import {humanizeDate} from '../utils/utils';
+import {humanizeDate} from '../utils/event';
 
 const createEventTypesTemplate = (currentType, defaultTypes) => {
   return defaultTypes.map((type) => `<div class="event__type-item">
