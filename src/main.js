@@ -64,16 +64,15 @@ if (sortedEvents.length === 0) {
       }
     };
 
-    eventComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+    eventComponent.setEditClickHandler(() => {
       replaceEventToEditEventForm();
       document.addEventListener('keydown', onEscKeyDown);
     });
-    editEventFormComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+    editEventFormComponent.setEditClickHandler(() => {
       replaceEditEventFormToEvent();
       document.removeEventListener('keydown', onEscKeyDown);
     });
-    editEventFormComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
-      evt.preventDefault();
+    editEventFormComponent.setFormSubmitClickHandler((evt) => {
       replaceEditEventFormToEvent();
       document.removeEventListener('keydown', onEscKeyDown);
     });
