@@ -72,7 +72,7 @@ if (sortedEvents.length === 0) {
       replaceEditEventFormToEvent();
       document.removeEventListener('keydown', onEscKeyDown);
     });
-    editEventFormComponent.setFormSubmitClickHandler(() => {
+    editEventFormComponent.setEditFormSubmitClickHandler(() => {
       replaceEditEventFormToEvent();
       document.removeEventListener('keydown', onEscKeyDown);
     });

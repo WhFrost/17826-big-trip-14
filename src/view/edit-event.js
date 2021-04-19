@@ -156,7 +156,7 @@ export default class EditEvent extends AbstractView {
     this._callback.editClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editClickHandler);
   }
-  setFormSubmitClickHandler(callback) {
+  setEditFormSubmitClickHandler(callback) {
     this._callback.editFormSubmitClick= callback;
     this.getElement().querySelector('form').addEventListener('submit', this._editFormSubmitClickHandler);
   }
