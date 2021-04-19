@@ -1,4 +1,5 @@
-import {createElement, humanizeDate} from '../utils/utils';
+import AbstractView from './abstract';
+import {humanizeDate} from '../utils/utils';
 
 const createTripCities = (events) => {
   if (events.length >= 3) {
@@ -35,21 +36,12 @@ const createTripInfo = (events) => {
     </section>`;
 };
 
-export default class TripInfo {
+export default class TripInfo extends AbstractView {
   constructor(events) {
-    this._element = null;
+    super();
     this._events = events;
   }
   getTemplate() {
     return createTripInfo(this._events);
-  }
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-  removeElement() {
-    this._element = null;
   }
 }

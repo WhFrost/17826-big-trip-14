@@ -1,5 +1,6 @@
+import AbstractView from './abstract';
 import {TYPES, CITIES, OFFERS_LIST} from '../mock/event';
-import {humanizeDate, createElement} from '../utils/utils';
+import {humanizeDate} from '../utils/utils';
 
 const createEventTypesTemplate = (currentType, defaultTypes) => {
   return defaultTypes.map((type) => `<div class="event__type-item">
@@ -130,21 +131,12 @@ const createEditEventForm = (event) => {
 </li>`;
 };
 
-export default class EditEvent {
+export default class EditEvent extends AbstractView {
   constructor(events) {
-    this._element = null;
+    super();
     this._events = events;
   }
   getTemplate() {
     return createEditEventForm(this._events);
-  }
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-  removeElement() {
-    this._element = null;
   }
 }

@@ -1,4 +1,5 @@
-import {humanizeDate, createElement} from '../utils/utils';
+import AbstractView from './abstract';
+import {humanizeDate} from '../utils/utils';
 
 const createOffersTemplate = (offers) => {
   if (offers.length > 0) {
@@ -66,21 +67,12 @@ const createEvent = (event) => {
 </li>`;
 };
 
-export default class Event {
+export default class Event extends AbstractView {
   constructor(events) {
-    this._element = null;
+    super();
     this._events = events;
   }
   getTemplate() {
     return createEvent(this._events);
-  }
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-  removeElement() {
-    this._element = null;
   }
 }
