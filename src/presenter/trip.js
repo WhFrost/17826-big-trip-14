@@ -1,5 +1,4 @@
 import TripInfoView from '../view/info';
-import TripCostView from '../view/cost';
 import TripNavView from '../view/navigation';
 import TripFiltersView from '../view/filters';
 import NoEventsView from '../view/no-events';
@@ -7,15 +6,17 @@ import EventsSortingView from '../view/sorting';
 import EventsListView from '../view/events-list';
 import EventView from '../view/event';
 import EditEventFormView from '../view/edit-event';
-import {render, RenderPosition, replace} from './utils/render';
+import {render, RenderPosition, replace} from '../utils/render';
+import {
+  tripMainContainer,
+  tripNavContainer,
+  tripFiltersContainer
+} from '../const';
 
 export default class Trip {
-  constructor(headerContainer, tripBoardContainer) {
-    this._headerContainer = headerContainer;
+  constructor(tripBoardContainer) {
     this._tripBoardContainer = tripBoardContainer;
 
-    this._tripInfoComponent = new TripInfoView(this._events);
-    this._tripCostComponent = new TripCostView(this._events);
     this._tripNavComponent = new TripNavView();
     this._tripFiltersComponent = new TripFiltersView();
     this._noEventsComponent = new NoEventsView();
@@ -25,23 +26,20 @@ export default class Trip {
 
   init(events) {
     this._events = events;
+    this._renderTripNav();
+    this._renderTripFilters();
+    this._tripInfoComponent = new TripInfoView(this._events);
     this._renderTrip();
   }
 
   _renderTripInfo() {
-    const tripMainContainer = this._headerContainer.querySelector('.trip-main');
     render(tripMainContainer, this._tripInfoComponent, RenderPosition.AFTERBEGIN);
   }
-  _renderTripCost() {
-    const tripInfoContainer = this._headerContainer.querySelector('.trip-info');
-    render(tripInfoContainer, this._tripCostComponent, RenderPosition.BEFOREEND);
-  }
+
   _renderTripNav() {
-    const tripNavContainer = this._headerContainer.querySelector('.trip-controls__navigation');
     render(tripNavContainer, this._tripNavComponent, RenderPosition.BEFOREEND);
   }
   _renderTripFilters() {
-    const tripFiltersContainer = this._headerContainer.querySelector('.trip-controls__filters');
     render(tripFiltersContainer, this._tripFiltersComponent, RenderPosition.BEFOREEND);
   }
   _renderNoEvents() {
@@ -89,12 +87,11 @@ export default class Trip {
   _renderEvents() {
     this._events.forEach((event) => this._renderEvent(event));
   }
-  _renderTrip(events) {
-    if (events.length === 0) {
+  _renderTrip() {
+    if (this._events.length === 0) {
       this._renderNoEvents();
     } else {
       this._renderTripInfo();
-      this._renderTripCost();
       this._renderEventsSorting();
       this._renderEventsList();
       this._renderEvents();
