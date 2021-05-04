@@ -4,9 +4,8 @@ import TripFiltersView from '../view/filters';
 import NoEventsView from '../view/no-events';
 import EventsSortingView from '../view/sorting';
 import EventsListView from '../view/events-list';
-import EventView from '../view/event';
-import EditEventFormView from '../view/edit-event';
-import {render, RenderPosition, replace} from '../utils/render';
+import EventPresenter from './event';
+import {render, RenderPosition} from '../utils/render';
 import {
   tripMainContainer,
   tripNavContainer,
@@ -35,7 +34,6 @@ export default class Trip {
   _renderTripInfo() {
     render(tripMainContainer, this._tripInfoComponent, RenderPosition.AFTERBEGIN);
   }
-
   _renderTripNav() {
     render(tripNavContainer, this._tripNavComponent, RenderPosition.BEFOREEND);
   }
@@ -52,37 +50,8 @@ export default class Trip {
     render(this._tripBoardContainer, this._eventsListComponent, RenderPosition.BEFOREEND);
   }
   _renderEvent(event) {
-    const eventComponent = new EventView(event);
-    render(this._eventsListComponent, eventComponent, RenderPosition.BEFOREEND);
-
-    const editEventFormComponent = new EditEventFormView(event);
-    const replaceEventToEditEventForm = () => {
-      replace(editEventFormComponent, eventComponent);
-    };
-    const replaceEditEventFormToEvent = () => {
-      replace(eventComponent, editEventFormComponent);
-    };
-
-    const onEscKeyDown = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        replaceEditEventFormToEvent();
-        document.removeEventListener('keydown', onEscKeyDown);
-      }
-    };
-
-    eventComponent.setEditClickHandler(() => {
-      replaceEventToEditEventForm();
-      document.addEventListener('keydown', onEscKeyDown);
-    });
-    editEventFormComponent.setEditClickHandler(() => {
-      replaceEditEventFormToEvent();
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
-    editEventFormComponent.setEditFormSubmitClickHandler(() => {
-      replaceEditEventFormToEvent();
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
+    const eventPresenter = new EventPresenter(this._eventsListComponent);
+    eventPresenter.init(event);
   }
   _renderEvents() {
     this._events.forEach((event) => this._renderEvent(event));
