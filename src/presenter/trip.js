@@ -6,6 +6,7 @@ import EventsSortingView from '../view/sorting';
 import EventsListView from '../view/events-list';
 import EventPresenter from './event';
 import {render, RenderPosition} from '../utils/render';
+import {updateItem} from '../utils/common';
 import {
   tripMainContainer,
   tripNavContainer,
@@ -21,6 +22,9 @@ export default class Trip {
     this._noEventsComponent = new NoEventsView();
     this._eventsSortingComponent = new EventsSortingView();
     this._eventsListComponent = new EventsListView();
+    this._eventPresenter = {};
+
+    this._handleEventChange = this._handleEventChange.bind(this);
   }
 
   init(events) {
@@ -50,11 +54,20 @@ export default class Trip {
     render(this._tripBoardContainer, this._eventsListComponent, RenderPosition.BEFOREEND);
   }
   _renderEvent(event) {
-    const eventPresenter = new EventPresenter(this._eventsListComponent);
+    const eventPresenter = new EventPresenter(this._eventsListComponent, this._handleEventChange);
     eventPresenter.init(event);
+    this._eventPresenter[event.id] = eventPresenter;
   }
   _renderEvents() {
     this._events.forEach((event) => this._renderEvent(event));
+  }
+  _handleEventChange(updatedEvent) {
+    this._events = updateItem(this._events, updatedEvent);
+    this._eventPresenter[updatedEvent.id].init(updatedEvent);
+  }
+  _clearEventsList() {
+    Object.values(this._eventPresenter).forEach((presenter) => presenter.destroy());
+    this._eventPresenter = {};
   }
   _renderTrip() {
     if (this._events.length === 0) {
