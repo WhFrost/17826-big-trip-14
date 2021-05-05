@@ -24,15 +24,37 @@ const createTripDates = (events) => {
   return '';
 };
 
+const createTripCost = (events) => {
+  let tripCost = 0;
+  let offersCost = 0;
+  events.forEach((event) => {
+    tripCost += event.cost;
+    const {offers} = event;
+    if (offers.length !== 0) {
+      offers.forEach((offer) => {
+        offersCost += offer.cost;
+        return offersCost;
+      });
+      return tripCost;
+    }
+  });
+
+  const totalCost = tripCost + offersCost;
+  return `<p class="trip-info__cost">
+  Total: &euro;&nbsp;<span class="trip-info__cost-value">${totalCost}</span></p>`;
+};
+
 const createTripInfo = (events) => {
   const cities = createTripCities(events);
   const tripDates = createTripDates(events);
+  const cost = createTripCost(events);
 
   return `<section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">
     ${cities}
     ${tripDates}
     </div>
+    ${cost}
     </section>`;
 };
 
