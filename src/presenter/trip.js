@@ -8,9 +8,15 @@ import EventPresenter from './event';
 import {render, RenderPosition} from '../utils/render';
 import {updateItem} from '../utils/common';
 import {
+  sortingEventsByDate,
+  sortingEventsByTime,
+  sortingEventsByPrice
+} from '../utils/event';
+import {
   tripMainContainer,
   tripNavContainer,
-  tripFiltersContainer
+  tripFiltersContainer,
+  SortTypes
 } from '../const';
 
 export default class Trip {
@@ -23,8 +29,11 @@ export default class Trip {
     this._eventsSortingComponent = new EventsSortingView();
     this._eventsListComponent = new EventsListView();
     this._eventPresenter = {};
+    this._currentSortType = SortTypes.DAY;
 
     this._handleEventChange = this._handleEventChange.bind(this);
+    this._handleModeChange = this._handleModeChange.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init(events) {
@@ -47,23 +56,48 @@ export default class Trip {
   _renderNoEvents() {
     render (this._tripBoardContainer, this._noEventsComponent, RenderPosition.BEFOREEND);
   }
+  _sortingEvents(sortType) {
+    switch (sortType) {
+      case SortTypes.TIME:
+        this._events.sort(sortingEventsByTime);
+        break;
+      case SortTypes.PRICE:
+        this._events.sort(sortingEventsByPrice);
+        break;
+      default:
+        this._events.sort(sortingEventsByDate);
+    }
+    this._currentSortType = sortType;
+  }
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+    this._sortingEvents(sortType);
+    this._clearEventsList();
+    this._renderEvents();
+  }
   _renderEventsSorting() {
     render(this._tripBoardContainer, this._eventsSortingComponent, RenderPosition.BEFOREEND);
+    this._eventsSortingComponent.setTypeSortChangeHandler(this._handleSortTypeChange);
   }
   _renderEventsList() {
     render(this._tripBoardContainer, this._eventsListComponent, RenderPosition.BEFOREEND);
   }
+  _handleEventChange(updatedEvent) {
+    this._events = updateItem(this._events, updatedEvent);
+    this._eventPresenter[updatedEvent.id].init(updatedEvent);
+  }
+  _handleModeChange() {
+    Object.values(this._eventPresenter).forEach((presenter) => presenter.resetView());
+  }
   _renderEvent(event) {
-    const eventPresenter = new EventPresenter(this._eventsListComponent, this._handleEventChange);
+    const eventPresenter = new EventPresenter(this._eventsListComponent, this._handleEventChange, this._handleModeChange);
     eventPresenter.init(event);
     this._eventPresenter[event.id] = eventPresenter;
   }
   _renderEvents() {
     this._events.forEach((event) => this._renderEvent(event));
-  }
-  _handleEventChange(updatedEvent) {
-    this._events = updateItem(this._events, updatedEvent);
-    this._eventPresenter[updatedEvent.id].init(updatedEvent);
   }
   _clearEventsList() {
     Object.values(this._eventPresenter).forEach((presenter) => presenter.destroy());

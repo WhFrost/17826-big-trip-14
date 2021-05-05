@@ -132,15 +132,15 @@ const createEditEventForm = (event) => {
 };
 
 export default class EditEvent extends AbstractView {
-  constructor(events) {
+  constructor(event) {
     super();
-    this._events = events;
+    this._event = event;
 
     this._editFormClickHandler = this._editFormClickHandler.bind(this);
     this._editFormSubmitClickHandler = this._editFormSubmitClickHandler.bind(this);
   }
   getTemplate() {
-    return createEditEventForm(this._events);
+    return createEditEventForm(this._event);
   }
 
   _editFormClickHandler(evt) {
@@ -149,7 +149,7 @@ export default class EditEvent extends AbstractView {
   }
   _editFormSubmitClickHandler(evt) {
     evt.preventDefault();
-    this._callback.editFormSubmitClick();
+    this._callback.editFormSubmitClick(this._event);
   }
 
   setEditFormClickHandler(callback) {

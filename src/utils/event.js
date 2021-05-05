@@ -4,16 +4,13 @@ const humanizeDate = (format, date) => {
   return dayjs(date).format(format);
 };
 
-const sortingEventsByDate = (events) => events.sort((a, b) => {
-  if (a.date > b.date) {
-    return 1;
-  } if (a.date < b.date) {
-    return -1;
-  }
-  return 0;
-});
+const sortingEventsByDate = (a, b) => dayjs(a.date).diff(dayjs(b.date));
+const sortingEventsByTime = (a, b) => dayjs(b.duration).diff(dayjs(a.duration));
+const sortingEventsByPrice = (a, b) => b.cost - a.cost;
 
 export {
   humanizeDate,
-  sortingEventsByDate
+  sortingEventsByDate,
+  sortingEventsByTime,
+  sortingEventsByPrice
 };
