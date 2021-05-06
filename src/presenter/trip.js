@@ -41,6 +41,7 @@ export default class Trip {
     this._renderTripNav();
     this._renderTripFilters();
     this._tripInfoComponent = new TripInfoView(this._events);
+    this._sortingEvents(this._currentSortType);
     this._renderTrip();
   }
 
@@ -58,14 +59,15 @@ export default class Trip {
   }
   _sortingEvents(sortType) {
     switch (sortType) {
+      case SortTypes.DAY:
+        this._events.sort(sortingEventsByDate);
+        break;
       case SortTypes.TIME:
         this._events.sort(sortingEventsByTime);
         break;
       case SortTypes.PRICE:
         this._events.sort(sortingEventsByPrice);
         break;
-      default:
-        this._events.sort(sortingEventsByDate);
     }
     this._currentSortType = sortType;
   }
