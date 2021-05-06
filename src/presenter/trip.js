@@ -58,7 +58,6 @@ export default class Trip {
     render (this._tripBoardContainer, this._noEventsComponent, RenderPosition.BEFOREEND);
   }
   _sortingEvents(sortType) {
-    debugger;
     switch (sortType) {
       case SortTypes.DAY:
         this._events.sort(sortingEventsByDate);
