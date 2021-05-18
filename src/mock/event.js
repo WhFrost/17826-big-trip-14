@@ -44,6 +44,13 @@ const OFFERS_LIST = [
 const generateOffers = () => {
   return getRandomItem(OFFERS_LIST);
 };
+const generateAvailableOffers = (type, offersList) => {
+  const offers = new Array(getRandomInteger(0, offersList.length)).fill().map(generateOffers);
+  return {
+    type: type,
+    offers,
+  };
+};
 const DESCRIPTION = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   'Cras aliquet varius magna, non porta ligula feugiat eget.',
@@ -76,18 +83,19 @@ const generatePhotos = () => {
 const generateEvent = () => {
   const id = nanoid();
   const date = dayjs().add(getRandomInteger(-MAX_DAY_GAP, MAX_DAY_GAP), 'day').add(getRandomInteger(MIN_TIME_GAP, MAX_TIME_GAP), 'minute');
+  const type = getRandomItem(TYPES);
   const timeStart = date.toDate();
   const timeEnd = dayjs(timeStart).add(getRandomInteger(MIN_TIME_GAP, MAX_TIME_GAP), 'minute');
   const duration = dayjs(timeEnd).diff(timeStart, 'minute');
   const isFavorite = Boolean(getRandomInteger(0, 1));
-  const offers = new Array(getRandomInteger(0, OFFERS_LIST.length)).fill().map(generateOffers);
+  const offers = generateAvailableOffers(type, OFFERS_LIST);
   const description = new Array(getRandomInteger(MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH)).fill().map(generateDescription);
   const photos = new Array(getRandomInteger(MIN_PHOTOS_LENGTH, MAX_PHOTOS_LENGTH)).fill().map(generatePhotos);
 
   return {
     id,
     date,
-    type: getRandomItem(TYPES),
+    type,
     city: getRandomItem(CITIES),
     timeStart,
     timeEnd,

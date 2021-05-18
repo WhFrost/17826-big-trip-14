@@ -13,7 +13,8 @@ const createOffersTemplate = (offers) => {
 };
 
 const createEvent = (event) => {
-  const {date, type, city, timeStart, timeEnd, duration, cost, offers, isFavorite} = event;
+  const {date, type, city, timeStart, timeEnd, duration, cost, isFavorite} = event;
+  const {offers} = event.offers;
   const formatedDate = humanizeDate('MMM D', date);
   const formatedTimeStart = humanizeDate('HH:mm', timeStart);
   const formatedTimeEnd = humanizeDate('HH:mm', timeEnd);

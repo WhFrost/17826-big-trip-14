@@ -1,4 +1,4 @@
-import AbstractView from './abstract';
+import SmartView from './smart';
 import {TYPES, CITIES, OFFERS_LIST} from '../mock/event';
 import {humanizeDate} from '../utils/event';
 
@@ -78,7 +78,8 @@ const createDestinationTemplate = (description, photos) => {
 };
 
 const createEditEventForm = (event) => {
-  const {type, city, timeStart, timeEnd, cost, offers, destination} = event;
+  const {type, city, timeStart, timeEnd, cost, destination} = event;
+  const {offers} = event.offers;
   const {description, photos} = destination;
   const eventTypesTemplate = createEventTypesTemplate(type, TYPES);
   const citiesListTeplate = createCitiesListTemplate(CITIES);
@@ -131,33 +132,73 @@ const createEditEventForm = (event) => {
 </li>`;
 };
 
-export default class EditEvent extends AbstractView {
+export default class EditEvent extends SmartView {
   constructor(event) {
     super();
-    this._event = event;
+    this._data = EditEvent.parseEventToData(event);
 
     this._editFormClickHandler = this._editFormClickHandler.bind(this);
+    this._typeChangeHandler = this._typeChangeHandler.bind(this);
+    this._costInputHandler = this._costInputHandler.bind(this);
     this._editFormSubmitClickHandler = this._editFormSubmitClickHandler.bind(this);
+
+    this._setInnerHandlers();
   }
   getTemplate() {
-    return createEditEventForm(this._event);
+    return createEditEventForm(this._data);
+  }
+
+  reset(event) {
+    this.updateData(
+      EditEvent.parseEventToData(event),
+    );
+  }
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setEditFormClickHandler(this._callback.editFormSubmitClick);
+    this.setEditFormSubmitClickHandler(this._callback.editFormSubmitClick);
+  }
+  _setInnerHandlers() {
+    this.getElement().querySelector('.event__type-list').addEventListener('change', this._typeChangeHandler);
+    this.getElement().querySelector('.event__input--price').addEventListener('input', this._costInputHandler);
+  }
+
+  static parseEventToData(event) {
+    return Object.assign({},event);
+  }
+  static parseDataToEvent(data) {
+    data = Object.assign({}, data);
+    return data;
   }
 
   _editFormClickHandler(evt) {
     evt.preventDefault();
     this._callback.editClick();
   }
+  _typeChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      type: evt.target.value,
+    });
+  }
+  _costInputHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      cost: evt.target.value,
+    }, true);
+  }
   _editFormSubmitClickHandler(evt) {
     evt.preventDefault();
-    this._callback.editFormSubmitClick(this._event);
+    this._callback.editFormSubmitClick(EditEvent.parseDataToEvent(this._data));
   }
 
   setEditFormClickHandler(callback) {
     this._callback.editClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editFormClickHandler);
   }
+
   setEditFormSubmitClickHandler(callback) {
-    this._callback.editFormSubmitClick= callback;
+    this._callback.editFormSubmitClick = callback;
     this.getElement().querySelector('form').addEventListener('submit', this._editFormSubmitClickHandler);
   }
 }
