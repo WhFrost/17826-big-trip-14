@@ -38,12 +38,7 @@ const createCostTemplate = (cost) => {
 };
 
 const createOffersTemplate = (offers, type, offersByTypes) => {
-  console.log(offers);
-  console.log(type);
-  console.log(offersByTypes);
   const availableOffers = offersByTypes.get(type);
-  console.log('После сортировки');
-  console.log(availableOffers);
   if (availableOffers.length > 0) {
     return `<section class="event__section  event__section--offers">
     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
