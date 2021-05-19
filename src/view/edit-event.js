@@ -1,5 +1,5 @@
 import SmartView from './smart';
-import {TYPES, CITIES, OFFERS_LIST} from '../mock/event';
+import {TYPES, CITIES, offersByTypes} from '../mock/event';
 import {humanizeDate} from '../utils/event';
 
 const createEventTypesTemplate = (currentType, defaultTypes) => {
@@ -37,8 +37,14 @@ const createCostTemplate = (cost) => {
 </div>`;
 };
 
-const createOffersTemplate = (offers, availableOffers) => {
-  if (offers.length > 0) {
+const createOffersTemplate = (offers, type, offersByTypes) => {
+  console.log(offers);
+  console.log(type);
+  console.log(offersByTypes);
+  const availableOffers = offersByTypes.get(type);
+  console.log('После сортировки');
+  console.log(availableOffers);
+  if (availableOffers.length > 0) {
     return `<section class="event__section  event__section--offers">
     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
     <div class="event__available-offers">` +
@@ -46,7 +52,7 @@ const createOffersTemplate = (offers, availableOffers) => {
       <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}" type="checkbox" name="event-${offer.id}"
       ${offers.includes(offer) ? 'checked' : ''}>
       <label class="event__offer-label" for="event-offer-${offer.id}">
-      <span class="event__offer-title">${offer.name}</span>
+      <span class="event__offer-title">${offer.title}</span>
       &plus;&euro;&nbsp;
       <span class="event__offer-price">${offer.cost}</span>
       </label>
@@ -78,14 +84,13 @@ const createDestinationTemplate = (description, photos) => {
 };
 
 const createEditEventForm = (event) => {
-  const {type, city, timeStart, timeEnd, cost, destination} = event;
-  const {offers} = event.offers;
+  const {type, city, timeStart, timeEnd, cost, offers, destination} = event;
   const {description, photos} = destination;
   const eventTypesTemplate = createEventTypesTemplate(type, TYPES);
   const citiesListTeplate = createCitiesListTemplate(CITIES);
   const timesTemplate = createTimesTemplate(timeStart, timeEnd);
   const costTemplate = createCostTemplate(cost);
-  const offersTemplate = createOffersTemplate(offers, OFFERS_LIST);
+  const offersTemplate = createOffersTemplate(offers, type, offersByTypes);
   const destinationTemplate = createDestinationTemplate(description, photos);
 
   return `<li class="trip-events__item">

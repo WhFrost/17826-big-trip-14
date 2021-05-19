@@ -29,7 +29,7 @@ const createTripCost = (events) => {
   let offersCost = 0;
   events.forEach((event) => {
     tripCost += event.cost;
-    const {offers} = event.offers;
+    const {offers} = event;
     if (offers.length !== 0) {
       offers.forEach((offer) => {
         offersCost += offer.cost;

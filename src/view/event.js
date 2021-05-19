@@ -4,7 +4,7 @@ import {humanizeDate} from '../utils/event';
 const createOffersTemplate = (offers) => {
   if (offers.length > 0) {
     return offers.map((offer) => `<li class="event__offer">
-    <span class="event__offer-title">${offer.name}</span>
+    <span class="event__offer-title">${offer.title}</span>
     &plus;&euro;&nbsp;
     <span class="event__offer-price">${offer.cost}</span>
   </li>`).join('');
@@ -13,8 +13,7 @@ const createOffersTemplate = (offers) => {
 };
 
 const createEvent = (event) => {
-  const {date, type, city, timeStart, timeEnd, duration, cost, isFavorite} = event;
-  const {offers} = event.offers;
+  const {date, type, city, timeStart, timeEnd, duration, cost, isFavorite, offers} = event;
   const formatedDate = humanizeDate('MMM D', date);
   const formatedTimeStart = humanizeDate('HH:mm', timeStart);
   const formatedTimeEnd = humanizeDate('HH:mm', timeEnd);
