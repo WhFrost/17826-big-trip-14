@@ -58,7 +58,7 @@ const generateEvent = () => {
   const timeEnd = dayjs(timeStart).add(getRandomInteger(MIN_TIME_GAP, MAX_TIME_GAP), 'minute');
   const duration = dayjs(timeEnd).diff(timeStart, 'minute');
   const isFavorite = Boolean(getRandomInteger(0, 1));
-  const availableOffers = getOffersByType(offersByTypes, type);
+  const availableOffers = getOffersByType(offersByTypes, type.toLowerCase());
   const generateOffers = () => {
     return getRandomItem(availableOffers);
   };

@@ -38,7 +38,7 @@ const createCostTemplate = (cost) => {
 };
 
 const createOffersTemplate = (offers, type, offersByTypes) => {
-  const availableOffers = offersByTypes.get(type);
+  const availableOffers = offersByTypes.get(type.toLowerCase());
   if (availableOffers.length > 0) {
     return `<section class="event__section  event__section--offers">
     <h3 class="event__section-title  event__section-title--offers">Offers</h3>

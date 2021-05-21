@@ -28,6 +28,7 @@ const generateCost = () => {
 const generateOffersByTypes = (types) => {
   const offersByTypes = new Map();
   types.forEach((type) => {
+    const formatedType = type.toLowerCase();
     const offers =[];
     const count = getRandomInteger(MIN_COUNT, MAX_COUNT);
     for (let i = 0; i < count; i++) {
@@ -39,7 +40,7 @@ const generateOffersByTypes = (types) => {
         cost: getRandomItem(offersCosts),
       });
     }
-    offersByTypes.set(type, offers);
+    offersByTypes.set(formatedType, offers);
   });
   return offersByTypes;
 };
