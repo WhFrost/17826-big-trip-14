@@ -15,11 +15,11 @@ const OFFERS_TITLE = [
   'Путешествие на поезде',
 ];
 const OFFERS_ID = [
-  'luggage',
-  'comfort',
-  'meal',
-  'seats',
-  'train',
+  'event-luggage',
+  'event-comfort',
+  'event-meal',
+  'event-seats',
+  'event-train',
 ];
 const generateCost = () => {
   return getRandomInteger(MIN_COST, MAX_COST);

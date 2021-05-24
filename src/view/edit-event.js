@@ -44,9 +44,9 @@ const createOffersTemplate = (offers, type, offersByTypes) => {
     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
     <div class="event__available-offers">` +
       availableOffers.map((offer) => `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}" type="checkbox" name="event-${offer.id}"
+      <input class="event__offer-checkbox  visually-hidden" id="${offer.id}" type="checkbox" name="${offer.id}"
       ${offers.includes(offer) ? 'checked' : ''}>
-      <label class="event__offer-label" for="event-offer-${offer.id}">
+      <label class="event__offer-label" for="${offer.id}">
       <span class="event__offer-title">${offer.title}</span>
       &plus;&euro;&nbsp;
       <span class="event__offer-price">${offer.cost}</span>
@@ -79,6 +79,7 @@ const createDestinationTemplate = (description, photos) => {
 };
 
 const createEditEventForm = (event) => {
+  console.log(event);
   const {type, city, timeStart, timeEnd, cost, offers, destination} = event;
   const {description, photos} = destination;
   const eventTypesTemplate = createEventTypesTemplate(type, TYPES);
@@ -139,7 +140,9 @@ export default class EditEvent extends SmartView {
 
     this._editFormClickHandler = this._editFormClickHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
+    this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
     this._costInputHandler = this._costInputHandler.bind(this);
+    this._offersCheckHandler = this._offersCheckHandler.bind(this);
     this._editFormSubmitClickHandler = this._editFormSubmitClickHandler.bind(this);
 
     this._setInnerHandlers();
@@ -160,7 +163,9 @@ export default class EditEvent extends SmartView {
   }
   _setInnerHandlers() {
     this.getElement().querySelector('.event__type-list').addEventListener('change', this._typeChangeHandler);
+    this.getElement().querySelector('.event__input--destination').addEventListener('change', this._destinationChangeHandler);
     this.getElement().querySelector('.event__input--price').addEventListener('input', this._costInputHandler);
+    this.getElement().querySelector('.event__available-offers').addEventListener('change', this._offersCheckHandler);
   }
 
   static parseEventToData(event) {
@@ -179,13 +184,51 @@ export default class EditEvent extends SmartView {
     evt.preventDefault();
     this.updateData({
       type: evt.target.value,
+      offers: [],
     });
+  }
+  _destinationChangeHandler(evt) {
+    evt.preventDefault();
+    if (!CITIES.includes(evt.target.value)) {
+      evt.target.setCustomValidity('Choose city from the list');
+      return;
+    }
+    evt.target.setCustomValidity('');
+    this.updateData({
+      city: evt.target.value,
+    }, true);
   }
   _costInputHandler(evt) {
     evt.preventDefault();
+    const cost = evt.target.value;
+
+    if (!Number.isInteger(parseInt(cost))) {
+      evt.target.setCustomValidity('Cost must be an integer');
+      return;
+    }
+    evt.target.setCustomValidity('');
     this.updateData({
-      cost: evt.target.value,
+      cost: parseInt(cost),
     }, true);
+  }
+  _offersCheckHandler(evt) {
+    const offer = evt.target;
+    const type = this._data.type.toLowerCase();
+    const eventOffers = this._data.offers;
+    if (offer.checked) {
+      const availableOffers = offersByTypes.get(type);
+      const addedOffer = availableOffers.filter((item) => item.id === offer.id);
+      const newOffers = eventOffers.concat(addedOffer);
+      this.updateData({
+        offers: newOffers,
+      });
+    }
+    if (!offer.checked) {
+      const newOffers = eventOffers.filter((item) => item.id !== offer.id);
+      this.updateData({
+        offers: newOffers,
+      });
+    }
   }
   _editFormSubmitClickHandler(evt) {
     evt.preventDefault();
