@@ -1,5 +1,5 @@
 import SmartView from './smart';
-import {TYPES, CITIES, offersByTypes} from '../mock/event';
+import {TYPES, CITIES, offersByTypes, destinationsByCities} from '../mock/event';
 import {humanizeDate} from '../utils/event';
 
 const createEventTypesTemplate = (currentType, defaultTypes) => {
@@ -58,7 +58,8 @@ const createOffersTemplate = (offers, type, offersByTypes) => {
   return '';
 };
 
-const createDestinationTemplate = (description, photos) => {
+const createDestinationTemplate = (destination) => {
+  const {description, photos} = destination;
   if (description.length > 0 || photos.length > 0) {
     let str = `<section class="event__section  event__section--destination">
     <h3 class="event__section-title  event__section-title--destination">Destination</h3>`;
@@ -81,13 +82,12 @@ const createDestinationTemplate = (description, photos) => {
 const createEditEventForm = (event) => {
   console.log(event);
   const {type, city, timeStart, timeEnd, cost, offers, destination} = event;
-  const {description, photos} = destination;
   const eventTypesTemplate = createEventTypesTemplate(type, TYPES);
   const citiesListTeplate = createCitiesListTemplate(CITIES);
   const timesTemplate = createTimesTemplate(timeStart, timeEnd);
   const costTemplate = createCostTemplate(cost);
   const offersTemplate = createOffersTemplate(offers, type, offersByTypes);
-  const destinationTemplate = createDestinationTemplate(description, photos);
+  const destinationTemplate = createDestinationTemplate(destination);
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -169,7 +169,7 @@ export default class EditEvent extends SmartView {
   }
 
   static parseEventToData(event) {
-    return Object.assign({},event);
+    return Object.assign({}, event);
   }
   static parseDataToEvent(data) {
     data = Object.assign({}, data);
@@ -189,13 +189,16 @@ export default class EditEvent extends SmartView {
   }
   _destinationChangeHandler(evt) {
     evt.preventDefault();
-    if (!CITIES.includes(evt.target.value)) {
+    const city = evt.target.value.toLowerCase();
+    const destination = destinationsByCities.get(city);
+    if (!destinationsByCities.has(city)) {
       evt.target.setCustomValidity('Choose city from the list');
       return;
     }
     evt.target.setCustomValidity('');
     this.updateData({
       city: evt.target.value,
+      destination,
     }, true);
   }
   _costInputHandler(evt) {
