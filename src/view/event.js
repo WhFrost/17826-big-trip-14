@@ -1,10 +1,10 @@
 import AbstractView from './abstract';
-import {humanizeDate} from '../utils/event';
+import {humanizeDate, getDuration} from '../utils/event';
 
 const createOffersTemplate = (offers) => {
   if (offers.length > 0) {
     return offers.map((offer) => `<li class="event__offer">
-    <span class="event__offer-title">${offer.name}</span>
+    <span class="event__offer-title">${offer.title}</span>
     &plus;&euro;&nbsp;
     <span class="event__offer-price">${offer.cost}</span>
   </li>`).join('');
@@ -13,16 +13,23 @@ const createOffersTemplate = (offers) => {
 };
 
 const createEvent = (event) => {
-  const {date, type, city, timeStart, timeEnd, duration, cost, offers, isFavorite} = event;
+  const {date, type, city, timeStart, timeEnd, cost, isFavorite, offers} = event;
   const formatedDate = humanizeDate('MMM D', date);
   const formatedTimeStart = humanizeDate('HH:mm', timeStart);
   const formatedTimeEnd = humanizeDate('HH:mm', timeEnd);
+  const duration = getDuration(timeStart, timeEnd);
 
   const getFormatedDuration = (duration) => {
-    if (duration % 60 <= 0) {
-      return duration + 'M';
+    const days = Math.trunc(duration / 24 / 60);
+    const hours = Math.trunc((duration / 60) % 24);
+    const minutes = Math.round(duration % 60);
+    if (days < 1) {
+      return hours + 'H ' + minutes + 'M';
     }
-    return Math.trunc(duration / 60) + 'H ' + duration % 60 + 'M';
+    if (hours < 1) {
+      return minutes + 'M';
+    }
+    return days + 'D ' + hours + 'H ' + minutes + 'M';
   };
   const formatedDuration = getFormatedDuration(duration);
 
