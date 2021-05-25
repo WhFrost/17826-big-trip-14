@@ -20,8 +20,9 @@ import {
 } from '../const';
 
 export default class Trip {
-  constructor(tripBoardContainer) {
+  constructor(tripBoardContainer, eventsModel) {
     this._tripBoardContainer = tripBoardContainer;
+    this._eventsModel = eventsModel;
 
     this._tripNavComponent = new TripNavView();
     this._tripFiltersComponent = new TripFiltersView();
@@ -36,13 +37,27 @@ export default class Trip {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
-  init(events) {
-    this._events = events;
+  init() {
     this._renderTripNav();
     this._renderTripFilters();
     this._tripInfoComponent = new TripInfoView(this._events);
     this._sortingEvents(this._currentSortType);
     this._renderTrip();
+  }
+
+  _getEvents() {
+    switch (this._currentSortType) {
+      case SortTypes.DAY:
+        this._events.sort(sortingEventsByDate);
+        break;
+      case SortTypes.TIME:
+        this._events.sort(sortingEventsByTime);
+        break;
+      case SortTypes.PRICE:
+        this._events.sort(sortingEventsByPrice);
+        break;
+    }
+    return this._eventsModel.getEvents();
   }
 
   _renderTripInfo() {
@@ -58,18 +73,7 @@ export default class Trip {
     render (this._tripBoardContainer, this._noEventsComponent, RenderPosition.BEFOREEND);
   }
   _sortingEvents(sortType) {
-    switch (sortType) {
-      case SortTypes.DAY:
-        this._events.sort(sortingEventsByDate);
-        break;
-      case SortTypes.TIME:
-        this._events.sort(sortingEventsByTime);
-        break;
-      case SortTypes.PRICE:
-        this._events.sort(sortingEventsByPrice);
-        break;
-    }
-    this._currentSortType = sortType;
+
   }
   _handleSortTypeChange(sortType) {
     if (this._currentSortType === sortType) {

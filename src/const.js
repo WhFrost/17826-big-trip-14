@@ -1,4 +1,4 @@
-const EVENTS_COUNT = 5;
+const EVENTS_COUNT = 1;
 
 const headerContainer = document.querySelector('.page-header');
 const tripMainContainer = headerContainer.querySelector('.trip-main');
