@@ -1,3 +1,5 @@
+import flatpickr from 'flatpickr';
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import SmartView from './smart';
 import {TYPES, CITIES, offersByTypes, destinationsByCities} from '../mock/event';
 import {humanizeDate} from '../utils/event';
@@ -80,7 +82,6 @@ const createDestinationTemplate = (destination) => {
 };
 
 const createEditEventForm = (event) => {
-  console.log(event);
   const {type, city, timeStart, timeEnd, cost, offers, destination} = event;
   const eventTypesTemplate = createEventTypesTemplate(type, TYPES);
   const citiesListTeplate = createCitiesListTemplate(CITIES);
@@ -137,15 +138,21 @@ export default class EditEvent extends SmartView {
   constructor(event) {
     super();
     this._data = EditEvent.parseEventToData(event);
+    this._timeStartPicker = null;
+    this._timeEndPicker = null;
 
     this._editFormClickHandler = this._editFormClickHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
+    this._timeStartChangeHandler = this._timeStartChangeHandler.bind(this);
+    this._timeEndChangeHandler = this._timeEndChangeHandler.bind(this);
     this._costInputHandler = this._costInputHandler.bind(this);
     this._offersCheckHandler = this._offersCheckHandler.bind(this);
     this._editFormSubmitClickHandler = this._editFormSubmitClickHandler.bind(this);
 
     this._setInnerHandlers();
+    this._setTimeStartPicker();
+    this._setTimeEndPicker();
   }
   getTemplate() {
     return createEditEventForm(this._data);
@@ -158,6 +165,8 @@ export default class EditEvent extends SmartView {
   }
   restoreHandlers() {
     this._setInnerHandlers();
+    this._setTimeStartPicker();
+    this._setTimeEndPicker();
     this.setEditFormClickHandler(this._callback.editFormSubmitClick);
     this.setEditFormSubmitClickHandler(this._callback.editFormSubmitClick);
   }
@@ -169,7 +178,7 @@ export default class EditEvent extends SmartView {
   }
 
   static parseEventToData(event) {
-    return Object.assign({}, event);
+    return Object.assign({},event);
   }
   static parseDataToEvent(data) {
     data = Object.assign({}, data);
@@ -199,7 +208,50 @@ export default class EditEvent extends SmartView {
     this.updateData({
       city: evt.target.value,
       destination,
-    }, true);
+    });
+  }
+
+  _timeStartChangeHandler([userDate]) {
+    this.updateData({
+      timeStart: userDate,
+    });
+  }
+
+  _timeEndChangeHandler([userDate]) {
+    this.updateData({
+      timeEnd: userDate,
+    });
+  }
+
+  _setTimeStartPicker() {
+    if (this._timeStartPicker) {
+      this._timeStartPicker.destroy();
+      this._timeStartPicker = null;
+    }
+    this._timeStartPicker = flatpickr(this.getElement().querySelector('#event-start-time-1'),
+      {
+        dateFormat: 'd/m/y H:i',
+        defaultDate: humanizeDate('DD/MM/YY HH:mm', this._data.timeStart),
+        enableTime: true,
+        maxDate: humanizeDate('DD/MM/YY HH:mm', this._data.timeEnd),
+        onChange: this._timeStartChangeHandler,
+      },
+    );
+  }
+  _setTimeEndPicker() {
+    if (this._timeEndPicker) {
+      this._timeEndPicker.destroy();
+      this._timeEndPicker = null;
+    }
+    this._timeEndPicker = flatpickr(this.getElement().querySelector('#event-end-time-1'),
+      {
+        dateFormat: 'd/m/y H:i',
+        defaultDate: humanizeDate('DD/MM/YY HH:mm', this._data.timeEnd),
+        enableTime: true,
+        minDate: humanizeDate('DD/MM/YY HH:mm', this._data.timeStart),
+        onChange: this._timeEndChangeHandler,
+      },
+    );
   }
   _costInputHandler(evt) {
     evt.preventDefault();

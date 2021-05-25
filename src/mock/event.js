@@ -31,7 +31,7 @@ const generateEvent = () => {
   const date = dayjs().add(getRandomInteger(-MAX_DAY_GAP, MAX_DAY_GAP), 'day').add(getRandomInteger(MIN_TIME_GAP, MAX_TIME_GAP), 'minute');
   const type = getRandomItem(TYPES);
   const city = getRandomItem(CITIES);
-  const timeStart = date.toDate();
+  const timeStart = date;
   const timeEnd = dayjs(timeStart).add(getRandomInteger(MIN_TIME_GAP, MAX_TIME_GAP), 'minute');
   const duration = dayjs(timeEnd).diff(timeStart, 'minute');
   const isFavorite = Boolean(getRandomInteger(0, 1));

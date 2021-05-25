@@ -85,6 +85,7 @@ export default class Event {
     this._replaceEventToEditEventForm();
   }
   _handleEditFormClick() {
+    this._editEventFormComponent.reset(this._event);
     this._replaceEditEventFormToEvent();
   }
   _handleEditFormSubmit(event) {
