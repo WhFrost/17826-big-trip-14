@@ -149,6 +149,7 @@ export default class EditEvent extends SmartView {
     this._costInputHandler = this._costInputHandler.bind(this);
     this._offersCheckHandler = this._offersCheckHandler.bind(this);
     this._editFormSubmitClickHandler = this._editFormSubmitClickHandler.bind(this);
+    this._editFormDeleteClickHandler = this._editFormDeleteClickHandler.bind(this);
 
     this._setInnerHandlers();
     this._setTimeStartPicker();
@@ -163,12 +164,21 @@ export default class EditEvent extends SmartView {
       EditEvent.parseEventToData(event),
     );
   }
+  removeElement() {
+    super.removeElement();
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+  }
+
   restoreHandlers() {
     this._setInnerHandlers();
     this._setTimeStartPicker();
     this._setTimeEndPicker();
     this.setEditFormClickHandler(this._callback.editFormSubmitClick);
     this.setEditFormSubmitClickHandler(this._callback.editFormSubmitClick);
+    this.setEditFormDeleteClickHandler(this._callback.editFormDeleteClick);
   }
   _setInnerHandlers() {
     this.getElement().querySelector('.event__type-list').addEventListener('change', this._typeChangeHandler);
@@ -213,6 +223,7 @@ export default class EditEvent extends SmartView {
 
   _timeStartChangeHandler([userDate]) {
     this.updateData({
+      date: userDate,
       timeStart: userDate,
     });
   }
@@ -276,27 +287,34 @@ export default class EditEvent extends SmartView {
       const newOffers = eventOffers.concat(addedOffer);
       this.updateData({
         offers: newOffers,
-      });
+      }, true);
     }
     if (!offer.checked) {
       const newOffers = eventOffers.filter((item) => item.id !== offer.id);
       this.updateData({
         offers: newOffers,
-      });
+      }, true);
     }
   }
   _editFormSubmitClickHandler(evt) {
     evt.preventDefault();
     this._callback.editFormSubmitClick(EditEvent.parseDataToEvent(this._data));
   }
+  _editFormDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editFormDeleteClick(EditEvent.parseDataToEvent(this._data));
+  }
 
   setEditFormClickHandler(callback) {
     this._callback.editClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editFormClickHandler);
   }
-
   setEditFormSubmitClickHandler(callback) {
     this._callback.editFormSubmitClick = callback;
     this.getElement().querySelector('form').addEventListener('submit', this._editFormSubmitClickHandler);
+  }
+  setEditFormDeleteClickHandler(callback) {
+    this._callback.editFormDeleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._editFormDeleteClickHandler);
   }
 }

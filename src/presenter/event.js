@@ -1,6 +1,8 @@
 import EventView from '../view/event';
 import EditEventFormView from '../view/edit-event';
 import {render, RenderPosition, replace, remove} from '../utils/render';
+import {UserAction, UpdateType} from '../const';
+import {isDatesEqual} from '../utils/event';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -20,6 +22,7 @@ export default class Event {
     this._handleEditClick = this._handleEditClick.bind(this);
     this._handleEditFormClick = this._handleEditFormClick.bind(this);
     this._handleEditFormSubmit = this._handleEditFormSubmit.bind(this);
+    this._handleEditFormDeleteClick = this._handleEditFormDeleteClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
   }
@@ -37,6 +40,7 @@ export default class Event {
     this._eventComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._editEventFormComponent.setEditFormClickHandler(this._handleEditFormClick);
     this._editEventFormComponent.setEditFormSubmitClickHandler(this._handleEditFormSubmit);
+    this._editEventFormComponent.setEditFormDeleteClickHandler(this._handleEditFormDeleteClick);
 
     if (prevEventComponent === null || prevEditEventFormComponent === null) {
       render(this._eventsListContainer, this._eventComponent, RenderPosition.BEFOREEND);
@@ -89,11 +93,26 @@ export default class Event {
     this._replaceEditEventFormToEvent();
   }
   _handleEditFormSubmit(event) {
-    this._changeData(event);
+    const isMinorUpdate = !isDatesEqual(this._event.date, event.date);
+
+    this._changeData(
+      UserAction.UPDATE_EVENT,
+      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+      event,
+    );
     this._replaceEditEventFormToEvent();
+  }
+  _handleEditFormDeleteClick(event) {
+    this._changeData(
+      UserAction.DELETE_EVENT,
+      UpdateType.MAJOR,
+      event,
+    );
   }
   _handleFavoriteClick() {
     this._changeData(
+      UserAction.UPDATE_EVENT,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._event,

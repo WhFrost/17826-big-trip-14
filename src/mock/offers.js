@@ -32,11 +32,10 @@ const generateOffersByTypes = (types) => {
     const offers =[];
     const count = getRandomInteger(MIN_COUNT, MAX_COUNT);
     for (let i = 0; i < count; i++) {
-
       const offersCosts = new Array(getRandomInteger(MIN_COUNT, MAX_COUNT)).fill().map(generateCost);
       offers.push({
         title: getRandomItem(OFFERS_TITLE),
-        id: getRandomItem(OFFERS_ID),
+        id: getRandomItem(OFFERS_ID) + `-${i}`,
         cost: getRandomItem(offersCosts),
       });
     }

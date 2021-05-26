@@ -1,4 +1,4 @@
-const EVENTS_COUNT = 1;
+const EVENTS_COUNT = 3;
 
 const headerContainer = document.querySelector('.page-header');
 const tripMainContainer = headerContainer.querySelector('.trip-main');
@@ -13,10 +13,24 @@ const SortTypes = {
   OFFERS: 'sort-offer',
 };
 
+const UserAction = {
+  UPDATE_EVENT: 'UPDATE_EVENT',
+  ADD_EVENT: 'ADD_EVENT',
+  DELETE_EVENT: 'DELETE_EVENT',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
 export {
   EVENTS_COUNT,
   tripMainContainer,
   tripNavContainer,
   tripFiltersContainer,
-  SortTypes
+  SortTypes,
+  UserAction,
+  UpdateType
 };
