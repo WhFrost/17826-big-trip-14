@@ -16,11 +16,21 @@ const isDatesEqual = (dateA, dateB) => {
   return (dateA === null && dateB === null) ? true : dayjs(dateA).isSame(dateB, 'D');
 };
 
+const isEventWillBe = (event) => {
+  return dayjs().isBefore(event, 'D');
+};
+const isEventExpired = (event) => {
+  return dayjs().isAfter(event, 'D');
+
+};
+
 export {
   humanizeDate,
   getDuration,
   sortingEventsByDate,
   sortingEventsByTime,
   sortingEventsByPrice,
-  isDatesEqual
+  isDatesEqual,
+  isEventWillBe,
+  isEventExpired
 };

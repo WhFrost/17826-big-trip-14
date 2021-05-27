@@ -1,7 +1,10 @@
 import {EVENTS_COUNT} from './const';
 import EventsModel from './model/evets';
+import FilterModel from './model/filter';
 import TripPresenter from './presenter/trip';
+import FiltersPresenter from './presenter/filters';
 import {generateEvent} from './mock/event';
+import {tripFiltersContainer} from './const';
 
 const events = new Array(EVENTS_COUNT).fill().map(generateEvent);
 
@@ -11,5 +14,9 @@ const tripBoardContainer = mainContainer.querySelector('.trip-events');
 const eventsModel = new EventsModel();
 eventsModel.setEvents(events);
 
-const tripPresenter = new TripPresenter(tripBoardContainer, eventsModel);
+const filtersModel = new FilterModel();
+const filtersPresenter = new FiltersPresenter(tripFiltersContainer, filtersModel, eventsModel);
+filtersPresenter.init();
+
+const tripPresenter = new TripPresenter(tripBoardContainer, eventsModel, filtersModel);
 tripPresenter.init();

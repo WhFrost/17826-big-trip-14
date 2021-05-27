@@ -25,6 +25,12 @@ const UpdateType = {
   MAJOR: 'MAJOR',
 };
 
+const FilterType = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PAST: 'past',
+};
+
 export {
   EVENTS_COUNT,
   tripMainContainer,
@@ -32,5 +38,6 @@ export {
   tripFiltersContainer,
   SortTypes,
   UserAction,
-  UpdateType
+  UpdateType,
+  FilterType
 };

@@ -1,6 +1,5 @@
 import TripInfoView from '../view/info';
 import TripNavView from '../view/navigation';
-import TripFiltersView from '../view/filters';
 import NoEventsView from '../view/no-events';
 import EventsSortingView from '../view/sorting';
 import EventsListView from '../view/events-list';
@@ -14,24 +13,23 @@ import {
 import {
   tripMainContainer,
   tripNavContainer,
-  tripFiltersContainer,
   SortTypes,
   UpdateType,
   UserAction
 } from '../const';
+import {filter} from '../utils/filters';
 
 export default class Trip {
-  constructor(tripBoardContainer, eventsModel) {
+  constructor(tripBoardContainer, eventsModel, filtersModel) {
     this._tripBoardContainer = tripBoardContainer;
     this._eventsModel = eventsModel;
+    this._filtersModel = filtersModel;
 
     this._tripNavComponent = new TripNavView();
-    this._tripFiltersComponent = new TripFiltersView();
     this._noEventsComponent = new NoEventsView();
     this._eventsListComponent = new EventsListView();
     this._eventPresenter = {};
     this._currentSortType = SortTypes.DAY;
-    // this._eventsSortingComponent = new EventsSortingView();
     this._eventsSortingComponent = null;
 
     this._handleViewAction = this._handleViewAction.bind(this);
@@ -40,23 +38,27 @@ export default class Trip {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
     this._eventsModel.addObserver(this._handleModelEvent);
+    this._filtersModel.addObserver(this._handleModelEvent);
   }
 
   init() {
     this._renderTripNav();
-    this._renderTripFilters();
     this._tripInfoComponent = new TripInfoView(this._getEvents());
     this._renderTrip();
   }
 
   _getEvents() {
+    const filterType = this._filtersModel.getFilter();
+    const events = this._eventsModel.getEvents();
+    const filtredEvents = filter[filterType](events);
+
     switch (this._currentSortType) {
       case SortTypes.DAY:
-        return this._eventsModel.getEvents().slice().sort(sortingEventsByDate);
+        return filtredEvents.sort(sortingEventsByDate);
       case SortTypes.TIME:
-        return this._eventsModel.getEvents().slice().sort(sortingEventsByTime);
+        return filtredEvents.sort(sortingEventsByTime);
       case SortTypes.PRICE:
-        return this._eventsModel.getEvents().slice().sort(sortingEventsByPrice);
+        return filtredEvents.sort(sortingEventsByPrice);
     }
     return this._eventsModel.getEvents();
   }
@@ -66,9 +68,6 @@ export default class Trip {
   }
   _renderTripNav() {
     render(tripNavContainer, this._tripNavComponent, RenderPosition.BEFOREEND);
-  }
-  _renderTripFilters() {
-    render(tripFiltersContainer, this._tripFiltersComponent, RenderPosition.BEFOREEND);
   }
   _renderNoEvents() {
     render (this._tripBoardContainer, this._noEventsComponent, RenderPosition.BEFOREEND);
