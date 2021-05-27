@@ -33,7 +33,6 @@ export default class Trip {
     this._eventPresenter = {};
     this._currentSortType = SortTypes.DAY;
     this._eventsSortingComponent = null;
-    this._eventNewPresenter = new EventNewPresenter(this._eventsListComponent, this._handleViewAction);
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -42,6 +41,8 @@ export default class Trip {
 
     this._eventsModel.addObserver(this._handleModelEvent);
     this._filtersModel.addObserver(this._handleModelEvent);
+
+    this._eventNewPresenter = new EventNewPresenter(this._eventsListComponent, this._handleViewAction);
   }
 
   init() {
