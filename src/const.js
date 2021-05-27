@@ -1,4 +1,23 @@
+import dayjs from 'dayjs';
+import {nanoid} from 'nanoid';
+import {TYPES} from './mock/event';
+
 const EVENTS_COUNT = 3;
+
+const BLANK_EVENT = {
+  id: nanoid(),
+  date: dayjs(),
+  type: TYPES[0],
+  city: '',
+  timeStart: dayjs(),
+  timeEnd: dayjs(),
+  cost: '',
+  offers: [],
+  destination: {
+    description: [],
+    photos: [],
+  },
+};
 
 const headerContainer = document.querySelector('.page-header');
 const tripMainContainer = headerContainer.querySelector('.trip-main');
@@ -33,6 +52,7 @@ const FilterType = {
 
 export {
   EVENTS_COUNT,
+  BLANK_EVENT,
   tripMainContainer,
   tripNavContainer,
   tripFiltersContainer,

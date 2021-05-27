@@ -15,9 +15,11 @@ import {
   tripNavContainer,
   SortTypes,
   UpdateType,
-  UserAction
+  UserAction,
+  FilterType
 } from '../const';
 import {filter} from '../utils/filters';
+import EventNewPresenter from './new-event.js';
 
 export default class Trip {
   constructor(tripBoardContainer, eventsModel, filtersModel) {
@@ -31,6 +33,7 @@ export default class Trip {
     this._eventPresenter = {};
     this._currentSortType = SortTypes.DAY;
     this._eventsSortingComponent = null;
+    this._eventNewPresenter = new EventNewPresenter(this._eventsListComponent, this._handleViewAction);
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -45,6 +48,12 @@ export default class Trip {
     this._renderTripNav();
     this._tripInfoComponent = new TripInfoView(this._getEvents());
     this._renderTrip();
+  }
+
+  createEvent() {
+    this._currentSortType = SortTypes.DAY;
+    this._filtersModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this._eventNewPresenter.init();
   }
 
   _getEvents() {
@@ -120,6 +129,7 @@ export default class Trip {
     }
   }
   _handleModeChange() {
+    this._eventNewPresenter.destroy();
     Object.values(this._eventPresenter).forEach((presenter) => presenter.resetView());
   }
   _renderEvent(event) {
@@ -131,6 +141,7 @@ export default class Trip {
     this._getEvents().forEach((event) => this._renderEvent(event));
   }
   _clearTrip({resetSortType = false} = {}) {
+    this._eventNewPresenter.destroy();
     Object.values(this._eventPresenter).forEach((presenter) => presenter.destroy());
     this._eventPresenter = {};
 

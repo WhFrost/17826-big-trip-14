@@ -2,6 +2,7 @@ import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import SmartView from './smart';
 import {TYPES, CITIES, offersByTypes, destinationsByCities} from '../mock/event';
+import {BLANK_EVENT} from '../const';
 import {humanizeDate} from '../utils/event';
 
 const createEventTypesTemplate = (currentType, defaultTypes) => {
@@ -135,7 +136,7 @@ const createEditEventForm = (event) => {
 };
 
 export default class EditEvent extends SmartView {
-  constructor(event) {
+  constructor(event = BLANK_EVENT) {
     super();
     this._data = EditEvent.parseEventToData(event);
     this._timeStartPicker = null;
@@ -166,9 +167,13 @@ export default class EditEvent extends SmartView {
   }
   removeElement() {
     super.removeElement();
-    if (this._datepicker) {
-      this._datepicker.destroy();
-      this._datepicker = null;
+    if (this._timeStartPicker) {
+      this._timeStartPicker.destroy();
+      this._timeStartPicker = null;
+    }
+    if (this._timeEndPicker) {
+      this._timeEndPicker.destroy();
+      this._timeEndPicker = null;
     }
   }
 
