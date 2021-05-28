@@ -31,6 +31,9 @@ export default class TripFilters extends AbstractView {
   getTemplate() {
     return createTripFilters(this._filter, this._currentFilterType);
   }
+  getInputsItems() {
+    return this.getElement().querySelectorAll('input');
+  }
 
   _filterTypeChangeHandler(evt) {
     evt.preventDefault();

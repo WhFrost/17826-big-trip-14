@@ -1,5 +1,3 @@
-import TripInfoView from '../view/info';
-import TripNavView from '../view/navigation';
 import NoEventsView from '../view/no-events';
 import EventsSortingView from '../view/sorting';
 import EventsListView from '../view/events-list';
@@ -11,8 +9,6 @@ import {
   sortingEventsByPrice
 } from '../utils/event';
 import {
-  tripMainContainer,
-  tripNavContainer,
   SortTypes,
   UpdateType,
   UserAction,
@@ -23,32 +19,38 @@ import EventNewPresenter from './new-event.js';
 
 export default class Trip {
   constructor(tripBoardContainer, eventsModel, filtersModel) {
-    this._tripBoardContainer = tripBoardContainer;
     this._eventsModel = eventsModel;
     this._filtersModel = filtersModel;
-
-    this._tripNavComponent = new TripNavView();
-    this._noEventsComponent = new NoEventsView();
-    this._eventsListComponent = new EventsListView();
+    this._tripBoardContainer = tripBoardContainer;
     this._eventPresenter = {};
     this._currentSortType = SortTypes.DAY;
+
     this._eventsSortingComponent = null;
+    this._noEventsComponent = new NoEventsView();
+    this._eventsListComponent = new EventsListView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
-    this._eventsModel.addObserver(this._handleModelEvent);
-    this._filtersModel.addObserver(this._handleModelEvent);
-
     this._eventNewPresenter = new EventNewPresenter(this._eventsListComponent, this._handleViewAction);
   }
 
   init() {
-    this._renderTripNav();
-    this._tripInfoComponent = new TripInfoView(this._getEvents());
+    this._eventsModel.addObserver(this._handleModelEvent);
+    this._filtersModel.addObserver(this._handleModelEvent);
+
     this._renderTrip();
+  }
+
+  destroy() {
+    this._clearTrip({resetSortType: true});
+
+    remove(this._eventsListComponent);
+
+    this._eventsModel.removeObserver(this._handleModelEvent);
+    this._filtersModel.removeObserver(this._handleModelEvent);
   }
 
   createEvent() {
@@ -73,12 +75,6 @@ export default class Trip {
     return this._eventsModel.getEvents();
   }
 
-  _renderTripInfo() {
-    render(tripMainContainer, this._tripInfoComponent, RenderPosition.AFTERBEGIN);
-  }
-  _renderTripNav() {
-    render(tripNavContainer, this._tripNavComponent, RenderPosition.BEFOREEND);
-  }
   _renderNoEvents() {
     render (this._tripBoardContainer, this._noEventsComponent, RenderPosition.BEFOREEND);
   }
@@ -156,7 +152,6 @@ export default class Trip {
     if (this._getEvents().length === 0) {
       this._renderNoEvents();
     } else {
-      this._renderTripInfo();
       this._renderEventsSorting();
       this._renderEventsList();
       this._renderEvents();

@@ -1,7 +1,7 @@
 import TripFiltersView from '../view/filters';
 import {render, RenderPosition, replace, remove} from '../utils/render';
 import {filter} from '../utils/filters';
-import {FilterType, UpdateType} from '../const';
+import {MenuItem, FilterType, UpdateType} from '../const';
 
 export default class Filters {
   constructor(filtersContainer, filtersModel, eventsModel) {
@@ -43,6 +43,24 @@ export default class Filters {
       return;
     }
     this._filtersModel.setFilter(UpdateType.MAJOR, filterType);
+  }
+
+  changeMode(menuItem) {
+    const actualFilterEvents = this._getFilters().slice().reduce((sum, {type, count}) => ({...sum, [type]: count}), {});
+    switch (menuItem) {
+      case MenuItem.TABLE:
+        this._filtersComponent.getInputsItems().forEach((input) => {
+          if (actualFilterEvents[input.value] > 0) {
+            input.disabled = false;
+            return;
+          }
+          input.disabled = true;
+        });
+        break;
+      case MenuItem.STATISTICS:
+        this._filtersComponent.getInputsItems().forEach((input) => input.disabled = true);
+        break;
+    }
   }
 
   _getFilters() {

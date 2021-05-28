@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import {nanoid} from 'nanoid';
 import {TYPES} from './mock/event';
 
-const EVENTS_COUNT = 3;
+const EVENTS_COUNT = 1;
 
 const BLANK_EVENT = {
   id: nanoid(),
@@ -21,8 +21,7 @@ const BLANK_EVENT = {
 
 const headerContainer = document.querySelector('.page-header');
 const tripMainContainer = headerContainer.querySelector('.trip-main');
-const tripNavContainer = headerContainer.querySelector('.trip-controls__navigation');
-const tripFiltersContainer = headerContainer.querySelector('.trip-controls__filters');
+
 
 const SortTypes = {
   DAY: 'sort-day',
@@ -50,14 +49,18 @@ const FilterType = {
   PAST: 'past',
 };
 
+const MenuItem = {
+  TABLE: 'TABLE',
+  STATISTICS: 'STATISTICS',
+};
+
 export {
   EVENTS_COUNT,
   BLANK_EVENT,
   tripMainContainer,
-  tripNavContainer,
-  tripFiltersContainer,
   SortTypes,
   UserAction,
   UpdateType,
-  FilterType
+  FilterType,
+  MenuItem
 };
