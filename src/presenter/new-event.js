@@ -1,4 +1,4 @@
-import EditEventFormView from '../view/edit-event';
+import AddEventFormView from '../view/add-event';
 import {render, RenderPosition, remove} from '../utils/render';
 import {UserAction, UpdateType} from '../const';
 
@@ -7,38 +7,38 @@ export default class EventNew {
     this._eventsListContainer = eventsListContainer;
     this._changeData = changeData;
 
-    this._editEventFormComponent = null;
+    this._addEventFormComponent = null;
 
-    this._handleEditFormSubmit = this._handleEditFormSubmit.bind(this);
-    this._handleEditFormDeleteClick = this._handleEditFormDeleteClick.bind(this);
+    this._handleAddFormSubmit = this._handleAddFormSubmit.bind(this);
+    this._handleAddFormDeleteClick = this._handleAddFormDeleteClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
   init() {
-    if (this._editEventFormComponent !== null) {
+    if (this._addEventFormComponent !== null) {
       return;
     }
-    this._editEventFormComponent = new EditEventFormView();
-    this._editEventFormComponent.setEditFormSubmitClickHandler(this._handleEditFormSubmit);
-    this._editEventFormComponent.setEditFormDeleteClickHandler(this._handleEditFormDeleteClick);
+    this._addEventFormComponent = new AddEventFormView();
+    this._addEventFormComponent.setAddFormSubmitClickHandler(this._handleAddFormSubmit);
+    this._addEventFormComponent.setAddFormDeleteClickHandler(this._handleAddFormDeleteClick);
 
-    render(this._eventsListContainer, this._editEventFormComponent, RenderPosition.AFTERBEGIN);
+    render(this._eventsListContainer, this._addEventFormComponent, RenderPosition.AFTERBEGIN);
 
     document.addEventListener('keydown', this._escKeyDownHandler);
   }
 
   destroy() {
-    if (this._eventEditComponent === null) {
+    if (this._addEventFormComponent === null) {
       return;
     }
 
-    remove(this._editEventFormComponent);
-    this._editEventFormComponent = null;
+    remove(this._addEventFormComponent);
+    this._addEventFormComponent = null;
 
     document.removeEventListener('keydown', this._escKeyDownHandler);
   }
 
-  _handleEditFormSubmit(event) {
+  _handleAddFormSubmit(event) {
     this._changeData(
       UserAction.ADD_EVENT,
       UpdateType.MINOR,
@@ -47,7 +47,7 @@ export default class EventNew {
     this.destroy();
   }
 
-  _handleEditFormDeleteClick() {
+  _handleAddFormDeleteClick() {
     this.destroy();
   }
 

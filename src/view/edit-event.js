@@ -3,7 +3,6 @@ import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import SmartView from './smart';
 import {TYPES, CITIES, offersByTypes, destinationsByCities} from '../mock/event';
-import {BLANK_EVENT} from '../const';
 import {humanizeDate} from '../utils/event';
 
 const createEventTypesTemplate = (currentType, defaultTypes) => {
@@ -37,7 +36,7 @@ const createCostTemplate = (cost) => {
     <span class="visually-hidden">Price</span>
     &euro;
   </label>
-  <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${cost}">
+  <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${cost}" required>
 </div>`;
 };
 
@@ -114,7 +113,7 @@ const createEditEventForm = (event) => {
         <label class="event__label  event__type-output" for="event-destination-1">
           ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(city)}" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(city)}" list="destination-list-1" required>
         ${citiesListTeplate}
       </div>
         ${timesTemplate}
@@ -137,7 +136,7 @@ const createEditEventForm = (event) => {
 };
 
 export default class EditEvent extends SmartView {
-  constructor(event = BLANK_EVENT) {
+  constructor(event) {
     super();
     this._data = EditEvent.parseEventToData(event);
     this._timeStartPicker = null;
