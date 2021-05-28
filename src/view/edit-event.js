@@ -1,7 +1,9 @@
+import he from 'he';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import SmartView from './smart';
 import {TYPES, CITIES, offersByTypes, destinationsByCities} from '../mock/event';
+import {BLANK_EVENT} from '../const';
 import {humanizeDate} from '../utils/event';
 
 const createEventTypesTemplate = (currentType, defaultTypes) => {
@@ -112,7 +114,7 @@ const createEditEventForm = (event) => {
         <label class="event__label  event__type-output" for="event-destination-1">
           ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(city)}" list="destination-list-1">
         ${citiesListTeplate}
       </div>
         ${timesTemplate}
@@ -135,7 +137,7 @@ const createEditEventForm = (event) => {
 };
 
 export default class EditEvent extends SmartView {
-  constructor(event) {
+  constructor(event = BLANK_EVENT) {
     super();
     this._data = EditEvent.parseEventToData(event);
     this._timeStartPicker = null;
@@ -149,6 +151,7 @@ export default class EditEvent extends SmartView {
     this._costInputHandler = this._costInputHandler.bind(this);
     this._offersCheckHandler = this._offersCheckHandler.bind(this);
     this._editFormSubmitClickHandler = this._editFormSubmitClickHandler.bind(this);
+    this._editFormDeleteClickHandler = this._editFormDeleteClickHandler.bind(this);
 
     this._setInnerHandlers();
     this._setTimeStartPicker();
@@ -163,12 +166,25 @@ export default class EditEvent extends SmartView {
       EditEvent.parseEventToData(event),
     );
   }
+  removeElement() {
+    super.removeElement();
+    if (this._timeStartPicker) {
+      this._timeStartPicker.destroy();
+      this._timeStartPicker = null;
+    }
+    if (this._timeEndPicker) {
+      this._timeEndPicker.destroy();
+      this._timeEndPicker = null;
+    }
+  }
+
   restoreHandlers() {
     this._setInnerHandlers();
     this._setTimeStartPicker();
     this._setTimeEndPicker();
     this.setEditFormClickHandler(this._callback.editFormSubmitClick);
     this.setEditFormSubmitClickHandler(this._callback.editFormSubmitClick);
+    this.setEditFormDeleteClickHandler(this._callback.editFormDeleteClick);
   }
   _setInnerHandlers() {
     this.getElement().querySelector('.event__type-list').addEventListener('change', this._typeChangeHandler);
@@ -213,6 +229,7 @@ export default class EditEvent extends SmartView {
 
   _timeStartChangeHandler([userDate]) {
     this.updateData({
+      date: userDate,
       timeStart: userDate,
     });
   }
@@ -276,27 +293,34 @@ export default class EditEvent extends SmartView {
       const newOffers = eventOffers.concat(addedOffer);
       this.updateData({
         offers: newOffers,
-      });
+      }, true);
     }
     if (!offer.checked) {
       const newOffers = eventOffers.filter((item) => item.id !== offer.id);
       this.updateData({
         offers: newOffers,
-      });
+      }, true);
     }
   }
   _editFormSubmitClickHandler(evt) {
     evt.preventDefault();
     this._callback.editFormSubmitClick(EditEvent.parseDataToEvent(this._data));
   }
+  _editFormDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editFormDeleteClick(EditEvent.parseDataToEvent(this._data));
+  }
 
   setEditFormClickHandler(callback) {
     this._callback.editClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editFormClickHandler);
   }
-
   setEditFormSubmitClickHandler(callback) {
     this._callback.editFormSubmitClick = callback;
     this.getElement().querySelector('form').addEventListener('submit', this._editFormSubmitClickHandler);
+  }
+  setEditFormDeleteClickHandler(callback) {
+    this._callback.editFormDeleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._editFormDeleteClickHandler);
   }
 }

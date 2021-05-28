@@ -1,5 +1,5 @@
 import AbstractView from './abstract';
-import {humanizeDate, getDuration} from '../utils/event';
+import {humanizeDate, getDuration, getFormatedDuration} from '../utils/event';
 
 const createOffersTemplate = (offers) => {
   if (offers.length > 0) {
@@ -19,18 +19,7 @@ const createEvent = (event) => {
   const formatedTimeEnd = humanizeDate('HH:mm', timeEnd);
   const duration = getDuration(timeStart, timeEnd);
 
-  const getFormatedDuration = (duration) => {
-    const days = Math.trunc(duration / 24 / 60);
-    const hours = Math.trunc((duration / 60) % 24);
-    const minutes = Math.round(duration % 60);
-    if (days < 1) {
-      return hours + 'H ' + minutes + 'M';
-    }
-    if (hours < 1) {
-      return minutes + 'M';
-    }
-    return days + 'D ' + hours + 'H ' + minutes + 'M';
-  };
+
   const formatedDuration = getFormatedDuration(duration);
 
   const offersTemplate = createOffersTemplate(offers);

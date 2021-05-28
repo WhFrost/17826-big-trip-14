@@ -1,3 +1,4 @@
+import he from 'he';
 import AbstractView from './abstract';
 import {TYPES, CITIES, OFFERS_LIST} from '../mock/event';
 import {humanizeDate} from '../utils/event';
@@ -109,7 +110,7 @@ const createAddEventForm = (event) => {
         <label class="event__label  event__type-output" for="event-destination-1">
         ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(city)}" list="destination-list-1">
         ${citiesListTeplate}
       </div>
       ${timesTemplate}
