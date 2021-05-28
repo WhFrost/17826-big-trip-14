@@ -7,7 +7,7 @@ const createFilterTemplate = (filter, currentFilterType) => {
     ${type === currentFilterType ? 'checked' : ''}
     ${count === 0 ? 'disabled' : ''}
     value="${type}">
-  <label class="trip-filters__filter-label" for="filter-${name}">${name}</label>
+  <label class="trip-filters__filter-label" for="filter-${name}">${name} ${count}</label>
 </div>`;
 };
 

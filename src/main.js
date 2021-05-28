@@ -6,8 +6,9 @@ import FiltersPresenter from './presenter/filters';
 import TripInfoPresener from './presenter/trip-info';
 import TripNavView from './view/navigation';
 import {generateEvent} from './mock/event';
-import {render, RenderPosition} from './utils/render';
+import {render, remove, RenderPosition} from './utils/render';
 import {MenuItem} from './const';
+import StatsView from './view/stats';
 
 const events = new Array(EVENTS_COUNT).fill().map(generateEvent);
 
@@ -31,6 +32,8 @@ const tripPresenter = new TripPresenter(tripBoardContainer, eventsModel, filters
 const filtersPresenter = new FiltersPresenter(tripFiltersContainer, filtersModel, eventsModel);
 const tripInfoPresenter = new TripInfoPresener(tripMainContainer, eventsModel);
 
+let statsComponent = null;
+
 const handleSiteMenuClick = (menuItem) => {
   tripNavComponent.changeMode(menuItem);
   filtersPresenter.changeMode(menuItem);
@@ -38,12 +41,13 @@ const handleSiteMenuClick = (menuItem) => {
     case MenuItem.TABLE:
       addEventButtonElement.disabled = false;
       tripPresenter.init();
-      // Скрыть статистику
+      remove(statsComponent);
       break;
     case MenuItem.STATISTICS:
       addEventButtonElement.disabled = true;
       tripPresenter.destroy();
-      // Показать статистику
+      statsComponent = new StatsView(eventsModel.getEvents());
+      render(tripBoardContainer, statsComponent, RenderPosition.BEFOREEND);
       break;
   }
 };
