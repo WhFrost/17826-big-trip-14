@@ -22,7 +22,7 @@ const headerContainer = document.querySelector('.page-header');
 const tripMainContainer = headerContainer.querySelector('.trip-main');
 const tripNavContainer = headerContainer.querySelector('.trip-controls__navigation');
 const tripFiltersContainer = headerContainer.querySelector('.trip-controls__filters');
-const addEventButtonElement = document.querySelector('.trip-main__event-add-btn');
+const addEventButtonElement = headerContainer.querySelector('.trip-main__event-add-btn');
 
 const tripNavComponent = new TripNavView();
 render(tripNavContainer, tripNavComponent, RenderPosition.BEFOREEND);

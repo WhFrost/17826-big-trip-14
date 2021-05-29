@@ -16,10 +16,6 @@ const BLANK_EVENT = {
   },
 };
 
-const headerContainer = document.querySelector('.page-header');
-const tripMainContainer = headerContainer.querySelector('.trip-main');
-
-
 const SortTypes = {
   DAY: 'sort-day',
   EVENT: 'sort-event',
@@ -55,7 +51,6 @@ const MenuItem = {
 export {
   COUNT_EVENT_FOR_EMPTY_LIST,
   BLANK_EVENT,
-  tripMainContainer,
   SortTypes,
   UserAction,
   UpdateType,
