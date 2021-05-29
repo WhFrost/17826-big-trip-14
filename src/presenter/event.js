@@ -9,6 +9,11 @@ const Mode = {
   EDITING: 'EDITING',
 };
 
+export const State = {
+  SAVING: 'SAVING',
+  DELETING: 'DELETING',
+};
+
 export default class Event {
   constructor(eventsListContainer, changeData, changeMode) {
     this._eventsListContainer = eventsListContainer;
@@ -50,7 +55,8 @@ export default class Event {
       replace(this._eventComponent, prevEventComponent);
     }
     if (this._mode === Mode.EDITING) {
-      replace(this._editEventFormComponent, prevEditEventFormComponent);
+      replace(this._eventComponent, prevEditEventFormComponent);
+      this._mode = Mode.DEFAULT;
     }
 
     remove(prevEventComponent);
@@ -64,6 +70,33 @@ export default class Event {
   resetView() {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceEditEventFormToEvent();
+    }
+  }
+
+  setViewState(state) {
+    const resetFormState = () => {
+      this._editEventFormComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+    switch (state) {
+      case State.SAVING:
+        this._editEventFormComponent.updateData({
+          isDisabled: true,
+          isSaving: true,
+        });
+        break;
+      case State.DELETING:
+        this._editEventFormComponent.updateData({
+          isDisabled: true,
+          isDeleting: true,
+        });
+        break;
+      case State.ABORTING:
+        this._eventComponent.shake(resetFormState);
+        this._editEventFormComponent.shake(resetFormState);
     }
   }
 

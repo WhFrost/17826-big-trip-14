@@ -38,13 +38,30 @@ export default class EventNew {
     document.removeEventListener('keydown', this._escKeyDownHandler);
   }
 
+  setSaving() {
+    this._addEventFormComponent.updateData({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+  setAborting() {
+    const resetFormState = () => {
+      this._addEventFormComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this._addEventFormComponent._offersCheckHandler(resetFormState);
+  }
+
   _handleAddFormSubmit(event) {
     this._changeData(
       UserAction.ADD_EVENT,
       UpdateType.MINOR,
       Object.assign({}, event),
     );
-    this.destroy();
   }
 
   _handleAddFormDeleteClick() {

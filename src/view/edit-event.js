@@ -20,25 +20,26 @@ const createCitiesListTemplate = (defaultDestinations) => {
         </datalist>`;
 };
 
-const createTimesTemplate = (timeStart, timeEnd) => {
+const createTimesTemplate = (timeStart, timeEnd, isDisabled) => {
   return `<div class="event__field-group  event__field-group--time">
   <label class="visually-hidden" for="event-start-time-1">From</label>
   <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time"
-  value="${humanizeDate('DD/MM/YY HH:mm', timeStart)}">
+  value="${humanizeDate('DD/MM/YY HH:mm', timeStart)}" ${isDisabled ? 'disabled' : ''}>
   &mdash;
   <label class="visually-hidden" for="event-end-time-1">To</label>
   <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time"
-  value="${humanizeDate('DD/MM/YY HH:mm', timeEnd)}">
+  value="${humanizeDate('DD/MM/YY HH:mm', timeEnd)}" ${isDisabled ? 'disabled' : ''}>
 </div>`;
 };
 
-const createCostTemplate = (cost) => {
+const createCostTemplate = (cost, isDisabled) => {
   return `<div class="event__field-group  event__field-group--price">
   <label class="event__label" for="event-price-1">
     <span class="visually-hidden">Price</span>
     &euro;
   </label>
-  <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${cost}" required>
+  <input class="event__input  event__input--price" id="event-price-1" type="text"
+  name="event-price" value="${cost}" required ${isDisabled ? 'disabled' : ''}>
 </div>`;
 };
 
@@ -98,7 +99,7 @@ const createDestinationTemplate = (destination) => {
 };
 
 const createEditEventForm = (event) => {
-  const {type, timeStart, timeEnd, cost, offers, destination} = event;
+  const {type, timeStart, timeEnd, cost, offers, destination, isSaving, isDisabled, isDeleting} = event;
   const {name} = event.destination;
   const types = Array.from(availableOffers.keys());
   const eventTypesTemplate = createEventTypesTemplate(type, types);
@@ -116,7 +117,7 @@ const createEditEventForm = (event) => {
           <span class="visually-hidden">Choose event type</span>
           <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
         </label>
-        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? 'disabled' : ''}>
 
         <div class="event__type-list">
           <fieldset class="event__type-group">
@@ -130,16 +131,15 @@ const createEditEventForm = (event) => {
         <label class="event__label  event__type-output" for="event-destination-1">
           ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(name)}" list="destination-list-1" required>
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination"
+        value="${he.encode(name)}" list="destination-list-1" required ${isDisabled ? 'disabled' : ''}>
         ${citiesListTeplate}
       </div>
         ${timesTemplate}
         ${costTemplate}
-      <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">Delete</button>
-      <button class="event__rollup-btn" type="button">
-        <span class="visually-hidden">Open event</span>
-      </button>
+        <button class="event__save-btn  btn  btn--blue" ${isDisabled ? 'disabled' : ''} type="submit">${isSaving ? 'Saving...' : 'Save'}</button>
+        <button class="event__reset-btn" ${isDisabled ? 'disabled' : ''} type="reset">${isDeleting ? 'Deleting' : 'Delete'}</button>
+        <button class="event__rollup-btn" ${isDisabled ? 'disabled' : ''} type="button">
     </header>
     <section class="event__details">
 
@@ -210,10 +210,21 @@ export default class EditEvent extends SmartView {
   }
 
   static parseEventToData(event) {
-    return Object.assign({},event);
+    return Object.assign({},
+      event,
+      {
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
   }
   static parseDataToEvent(data) {
     data = Object.assign({}, data);
+
+    delete data.isDisabled;
+    delete data.isSaving;
+    delete data.isDeleting;
+
     return data;
   }
 
