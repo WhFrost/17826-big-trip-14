@@ -34,7 +34,7 @@ const filtersModel = new FilterModel();
 const destinationsModel = new DestinationsModel();
 export const availableDestinations = destinationsModel.getDestinations();
 
-const tripPresenter = new TripPresenter(tripBoardContainer, eventsModel, filtersModel);
+const tripPresenter = new TripPresenter(tripBoardContainer, eventsModel, filtersModel, api);
 const filtersPresenter = new FiltersPresenter(tripFiltersContainer, filtersModel, eventsModel);
 const tripInfoPresenter = new TripInfoPresener(tripMainContainer, eventsModel);
 
@@ -61,18 +61,18 @@ const handleSiteMenuClick = (menuItem) => {
 
 tripNavComponent.setNavClickHandler(handleSiteMenuClick);
 
-tripPresenter.init();
-
 addEventButtonElement.addEventListener('click', (evt) => {
   evt.preventDefault();
   tripPresenter.createEvent();
 });
 
-Promise.all([api.getEvents(), api.getDestinations(), api.getOffers()])
-  .then(([events, destinations, offers]) => {
-    offersModel.setOffers(offers);
+Promise.all([api.getDestinations(), api.getOffers(), api.getEvents()])
+  .then(([destinations, offers, events]) => {
     destinationsModel.setDestinations(destinations);
+    offersModel.setOffers(offers);
     eventsModel.setEvents(UpdateType.INIT, events);
     filtersPresenter.init();
     tripInfoPresenter.init();
   });
+
+tripPresenter.init();

@@ -20,13 +20,14 @@ import {filter} from '../utils/filters';
 import EventNewPresenter from './new-event.js';
 
 export default class Trip {
-  constructor(tripBoardContainer, eventsModel, filtersModel) {
+  constructor(tripBoardContainer, eventsModel, filtersModel, api) {
     this._eventsModel = eventsModel;
     this._filtersModel = filtersModel;
     this._tripBoardContainer = tripBoardContainer;
     this._eventPresenter = {};
     this._currentSortType = SortTypes.DAY;
     this._isLoading = true;
+    this._api = api;
 
     this._eventsSortingComponent = null;
     this._eventsListComponent = new EventsListView();
@@ -104,13 +105,19 @@ export default class Trip {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
-        this._eventsModel.updateEvent(updateType, update);
+        this._api.updateEvent(update).then((response) => {
+          this._eventsModel.updateEvent(updateType, response);
+        });
         break;
       case UserAction.ADD_EVENT:
-        this._eventsModel.addEvent(updateType, update);
+        this._api.addEvent(update).then((response) => {
+          this._eventsModel.addEvent(updateType, response);
+        });
         break;
       case UserAction.DELETE_EVENT:
-        this._eventsModel.deleteEvent(updateType, update);
+        this._api.addEvent(update).then(() => {
+          this._eventsModel.deleteEvent(updateType, update);
+        });
         break;
     }
   }

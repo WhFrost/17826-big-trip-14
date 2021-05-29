@@ -1,21 +1,19 @@
 import dayjs from 'dayjs';
-import {nanoid} from 'nanoid';
 import {TYPES} from './mock/event';
 
 const COUNT_EVENT_FOR_EMPTY_LIST = 0;
 
 const BLANK_EVENT = {
-  id: nanoid(),
   date: dayjs(),
   type: TYPES[0],
-  city: '',
   timeStart: dayjs(),
   timeEnd: dayjs(),
   cost: '',
   offers: [],
   destination: {
+    name: '',
     description: [],
-    photos: [],
+    pictures: [],
   },
 };
 

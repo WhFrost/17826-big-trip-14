@@ -48,7 +48,7 @@ const createOffers = (offers, offersByType, isDisabled) => {
       const isChecked = (offers.some((item) => item.title === offer.title));
       const id = offer.title + '-' + offer.price;
       return `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="${id}" type="checkbox" name="${id}" ${isDisabled ? 'disabled' : ''}
+      <input class="event__offer-checkbox  visually-hidden" id="${id}" type="checkbox" name="${offer.title}" ${isDisabled ? 'disabled' : ''}
       ${isChecked ? 'checked' : ''}>
       <label class="event__offer-label" for="${id}">
       <span class="event__offer-title">${offer.title}</span>
@@ -304,14 +304,14 @@ export default class EditEvent extends SmartView {
     const eventOffers = this._data.offers;
     if (offer.checked) {
       const newAvailableOffers = availableOffers.get(type);
-      const addedOffer = newAvailableOffers.filter((item) => item.id === offer.id);
+      const addedOffer = newAvailableOffers.filter((item) => item.title === offer.name);
       const newOffers = eventOffers.concat(addedOffer);
       this.updateData({
         offers: newOffers,
       }, true);
     }
     if (!offer.checked) {
-      const newOffers = eventOffers.filter((item) => item.id !== offer.id);
+      const newOffers = eventOffers.filter((item) => item.title !== offer.name);
       this.updateData({
         offers: newOffers,
       }, true);

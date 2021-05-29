@@ -28,11 +28,11 @@ export default class Api {
     return this._load({
       url: `points/${event.id}`,
       method: Method.PUT,
-      body: JSON.stringify(event),
+      body: JSON.stringify(EventsModel.adaptToServer(event)),
       headers: new Headers({'Content-Type': 'application/json'}),
     })
       .then(Api.toJSON)
-      .then(EventsModel.adaptToServer);
+      .then(EventsModel.adaptToClient);
   }
 
   addEvent(event) {
@@ -43,11 +43,14 @@ export default class Api {
       headers: new Headers({'Content-Type': 'application/json'}),
     })
       .then(Api.toJSON)
-      .then(EventsModel.adaptToServer);
+      .then(EventsModel.adaptToClient);
   }
 
   deleteEvent(event) {
-    return this._load({url: `points/${event.id}`, method: Method.DELETE});
+    return this._load({
+      url: `points/${event.id}`,
+      method: Method.DELETE,
+    });
   }
 
   getOffers() {
