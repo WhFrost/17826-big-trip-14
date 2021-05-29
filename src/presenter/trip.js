@@ -117,7 +117,7 @@ export default class Trip {
         this._api.addEvent(update).then((response) => {
           this._eventsModel.addEvent(updateType, response);
         }).catch(() => {
-          this._eventPresenter.setAborting();
+          this._eventNewPresenter.setAborting();
         });
         break;
       case UserAction.DELETE_EVENT:

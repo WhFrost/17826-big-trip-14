@@ -250,7 +250,6 @@ export default class AddEvent extends SmartView {
 
   _timeStartChangeHandler([userDate]) {
     this.updateData({
-      date: userDate,
       timeStart: userDate,
     });
   }
