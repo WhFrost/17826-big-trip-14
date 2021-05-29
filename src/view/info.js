@@ -4,12 +4,12 @@ import {humanizeDate} from '../utils/event';
 const createTripCities = (events) => {
   if (events.length >= 3) {
     return `<h1 class="trip-info__title">
-    ${events[0].city + ' &mdash; ... &mdash; ' + events[events.length - 1].city}
+    ${events[0].destination.name + ' &mdash; ... &mdash; ' + events[events.length - 1].destination.name}
     </h1>`;
   }
   if (events.length > 0 && events.length < 3) {
     return `<h1 class="trip-info__title">
-    ${events.map((event) => event.city).join(' &mdash; ')}
+    ${events.map((event) => event.destination.name).join(' &mdash; ')}
     </h1>`;
   }
   return '';
@@ -17,8 +17,8 @@ const createTripCities = (events) => {
 
 const createTripDates = (events) => {
   if (events.length > 0) {
-    const dateBegin = humanizeDate('MMM DD', events[0].date);
-    const dateEnd = humanizeDate('MMM DD', events[events.length - 1].date);
+    const dateBegin = humanizeDate('MMM DD', events[0].timeStart);
+    const dateEnd = humanizeDate('MMM DD', events[events.length - 1].timeStart);
     return `<p class="trip-info__dates">${dateBegin}&nbsp;&mdash;&nbsp;${dateEnd}</p>`;
   }
   return '';
@@ -32,7 +32,7 @@ const createTripCost = (events) => {
     const {offers} = event;
     if (offers.length !== 0) {
       offers.forEach((offer) => {
-        offersCost += offer.cost;
+        offersCost += offer.price;
         return offersCost;
       });
       return tripCost;

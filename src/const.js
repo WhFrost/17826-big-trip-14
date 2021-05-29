@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import {nanoid} from 'nanoid';
 import {TYPES} from './mock/event';
 
-const EVENTS_COUNT = 1;
+const COUNT_EVENT_FOR_EMPTY_LIST = 0;
 
 const BLANK_EVENT = {
   id: nanoid(),
@@ -41,6 +41,7 @@ const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
 const FilterType = {
@@ -55,7 +56,7 @@ const MenuItem = {
 };
 
 export {
-  EVENTS_COUNT,
+  COUNT_EVENT_FOR_EMPTY_LIST,
   BLANK_EVENT,
   tripMainContainer,
   SortTypes,

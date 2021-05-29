@@ -6,15 +6,16 @@ const createOffersTemplate = (offers) => {
     return offers.map((offer) => `<li class="event__offer">
     <span class="event__offer-title">${offer.title}</span>
     &plus;&euro;&nbsp;
-    <span class="event__offer-price">${offer.cost}</span>
+    <span class="event__offer-price">${offer.price}</span>
   </li>`).join('');
   }
   return '';
 };
 
 const createEvent = (event) => {
-  const {date, type, city, timeStart, timeEnd, cost, isFavorite, offers} = event;
-  const formatedDate = humanizeDate('MMM D', date);
+  const {type, timeStart, timeEnd, cost, isFavorite, offers} = event;
+  const {name} = event.destination;
+  const formatedDate = humanizeDate('MMM D', timeStart);
   const formatedTimeStart = humanizeDate('HH:mm', timeStart);
   const formatedTimeEnd = humanizeDate('HH:mm', timeEnd);
   const duration = getDuration(timeStart, timeEnd);
@@ -34,7 +35,7 @@ const createEvent = (event) => {
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
     </div>
-    <h3 class="event__title">${type} ${city}</h3>
+    <h3 class="event__title">${type} ${name}</h3>
     <div class="event__schedule">
       <p class="event__time">
         <time class="event__start-time" datetime="2019-03-18T10:30">${formatedTimeStart}</time>

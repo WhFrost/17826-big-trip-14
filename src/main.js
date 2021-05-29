@@ -1,29 +1,20 @@
-import {EVENTS_COUNT} from './const';
 import EventsModel from './model/events';
 import FilterModel from './model/filter';
 import OffersModel from './model/offers';
+import DestinationsModel from './model/destinations';
 import TripPresenter from './presenter/trip';
 import FiltersPresenter from './presenter/filters';
 import TripInfoPresener from './presenter/trip-info';
 import TripNavView from './view/navigation';
-import {generateEvent} from './mock/event';
-import {render, remove, RenderPosition} from './utils/render';
-import {MenuItem} from './const';
 import StatsView from './view/stats';
+import {render, remove, RenderPosition} from './utils/render';
+import {MenuItem, UpdateType} from './const';
 import Api from './api';
 
 const USER = 'Wh_Frost';
 const AUTHORIZATION = `Basic ${USER}`;
 const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
 const api = new Api(END_POINT, AUTHORIZATION);
-
-const events = new Array(EVENTS_COUNT).fill().map(generateEvent);
-
-const offersModel = new OffersModel();
-const eventsModel = new EventsModel();
-eventsModel.setEvents(events);
-
-const filtersModel = new FilterModel();
 
 const mainContainer = document.querySelector('.page-main');
 const tripBoardContainer = mainContainer.querySelector('.trip-events');
@@ -36,9 +27,17 @@ const addEventButtonElement = document.querySelector('.trip-main__event-add-btn'
 const tripNavComponent = new TripNavView();
 render(tripNavContainer, tripNavComponent, RenderPosition.BEFOREEND);
 
+const offersModel = new OffersModel();
+export const availableOffers = offersModel.getOffers();
+const eventsModel = new EventsModel();
+const filtersModel = new FilterModel();
+const destinationsModel = new DestinationsModel();
+export const availableDestinations = destinationsModel.getDestinations();
+
 const tripPresenter = new TripPresenter(tripBoardContainer, eventsModel, filtersModel);
 const filtersPresenter = new FiltersPresenter(tripFiltersContainer, filtersModel, eventsModel);
 const tripInfoPresenter = new TripInfoPresener(tripMainContainer, eventsModel);
+
 
 let statsComponent = null;
 
@@ -63,18 +62,17 @@ const handleSiteMenuClick = (menuItem) => {
 tripNavComponent.setNavClickHandler(handleSiteMenuClick);
 
 tripPresenter.init();
-filtersPresenter.init();
-tripInfoPresenter.init();
 
 addEventButtonElement.addEventListener('click', (evt) => {
   evt.preventDefault();
   tripPresenter.createEvent();
 });
 
-// api.getEvents().then((events) => {
-
-// });
-api.getOffers().then((offers) => {
-  offersModel.setOffers(offers);
-  offersModel.getOffers();
-});
+Promise.all([api.getEvents(), api.getDestinations(), api.getOffers()])
+  .then(([events, destinations, offers]) => {
+    offersModel.setOffers(offers);
+    destinationsModel.setDestinations(destinations);
+    eventsModel.setEvents(UpdateType.INIT, events);
+    filtersPresenter.init();
+    tripInfoPresenter.init();
+  });

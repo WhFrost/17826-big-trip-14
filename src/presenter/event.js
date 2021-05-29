@@ -93,7 +93,7 @@ export default class Event {
     this._replaceEditEventFormToEvent();
   }
   _handleEditFormSubmit(event) {
-    const isMinorUpdate = !isDatesEqual(this._event.date, event.date);
+    const isMinorUpdate = !isDatesEqual(this._event.timeStart, event.timeStart);
 
     this._changeData(
       UserAction.UPDATE_EVENT,
