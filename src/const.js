@@ -6,6 +6,7 @@ const BLANK_EVENT = {
   type: 'taxi',
   timeStart: dayjs(),
   timeEnd: dayjs(),
+  isFavorite: false,
   cost: '',
   offers: [],
   destination: {

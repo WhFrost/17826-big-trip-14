@@ -58,7 +58,7 @@ export default class EventNew {
       });
     };
 
-    this._addEventFormComponent._offersCheckHandler(resetFormState);
+    this._addEventFormComponent.shake(resetFormState);
   }
 
   _handleAddFormSubmit(event) {
