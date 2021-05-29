@@ -2,8 +2,8 @@ import he from 'he';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import SmartView from './smart';
-import {TYPES, CITIES, offersByTypes, destinationsByCities} from '../mock/event';
 import {humanizeDate} from '../utils/event';
+import {availableOffers, availableDestinations} from '../main';
 import {BLANK_EVENT} from '../const';
 
 const createEventTypesTemplate = (currentType, defaultTypes) => {
@@ -16,7 +16,9 @@ const createEventTypesTemplate = (currentType, defaultTypes) => {
 };
 
 const createCitiesListTemplate = (defaultDestinations) => {
-  return defaultDestinations.reduce((total, current) => total + `<option value="${current}"></option>`, '<datalist id="destination-list-1">') + '</datalist>';
+  return `<datalist id="destination-list-1">
+    ${defaultDestinations.map((item) => `<option value="${item.name}"></option>`).join('')}
+        </datalist>`;
 };
 
 const createTimesTemplate = (timeStart, timeEnd) => {
@@ -41,39 +43,52 @@ const createCostTemplate = (cost) => {
 </div>`;
 };
 
-const createOffersTemplate = (offers, type, offersByTypes) => {
-  const availableOffers = offersByTypes.get(type.toLowerCase());
-  if (availableOffers.length > 0) {
-    return `<section class="event__section  event__section--offers">
-    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-    <div class="event__available-offers">` +
-      availableOffers.map((offer) => `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="${offer.id}" type="checkbox" name="${offer.id}"
-      ${offers.includes(offer) ? 'checked' : ''}>
-      <label class="event__offer-label" for="${offer.id}">
+const createOffers = (offers, offersByType, isDisabled) => {
+  if (offersByType.length > 0) {
+    return offersByType.map((offer) => {
+      const isChecked = (offers.some((item) => item.title === offer.title));
+      const id = offer.title + '-' + offer.price;
+      return `<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="${id}" type="checkbox" name="${id}" ${isDisabled ? 'disabled' : ''}
+      ${isChecked ? 'checked' : ''}>
+      <label class="event__offer-label" for="${id}">
       <span class="event__offer-title">${offer.title}</span>
       &plus;&euro;&nbsp;
-      <span class="event__offer-price">${offer.cost}</span>
+      <span class="event__offer-price">${offer.price}</span>
       </label>
-      </div>`).join('') +
-    `</div>
-    </section>`;
+      </div>`;}).join('');
   }
   return '';
 };
 
+const createOffersTemplate = (offers, type, offersByType, isDisabled) => {
+  const newAvailableOffers = offersByType.get(type.toLowerCase());
+  const newOffers = createOffers(offers, newAvailableOffers, isDisabled);
+
+  if (!newAvailableOffers.length || !newAvailableOffers) {
+    return `<section class="event__section  event__section--offers visually-hidden">
+      </section>`;
+  }
+
+  return `<section class="event__section  event__section--offers">
+  <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+  <div class="event__available-offers">
+     ${newOffers}
+  </div>
+</section>`;
+};
+
 const createDestinationTemplate = (destination) => {
-  const {description, photos} = destination;
-  if (description.length > 0 || photos.length > 0) {
+  const {description, pictures} = destination;
+  if (description.length > 0 || pictures.length > 0) {
     let str = `<section class="event__section  event__section--destination">
     <h3 class="event__section-title  event__section-title--destination">Destination</h3>`;
     if (description.length > 0) {
-      str += description.reduce((total, current) =>
-        total + current + ' ', '<p class="event__destination-description">') + '</p>';
+      str += `<p class="event__destination-description">${description}</p>`;
     }
-    if (photos.length > 0) {
-      str += photos.reduce((total, current) =>
-        total + `<img class="event__photo" src="${current}.jpg" alt="Event photo"></img>`, `<div class="event__photos-container">
+    if (pictures.length > 0) {
+      str += pictures.reduce((total, current) =>
+        total + `<img class="event__photo" src="${current.src}.jpg" alt="${current.description}"></img>`, `<div class="event__photos-container">
         <div class="event__photos-tape">`) +
         `</div>
         </div>`;
@@ -84,12 +99,14 @@ const createDestinationTemplate = (destination) => {
 };
 
 const createAddEventForm = (event) => {
-  const {type, city, timeStart, timeEnd, cost, offers, destination} = event;
-  const eventTypesTemplate = createEventTypesTemplate(type, TYPES);
-  const citiesListTeplate = createCitiesListTemplate(CITIES);
+  const {type, timeStart, timeEnd, cost, offers, destination} = event;
+  const {name} = event.destination;
+  const types = Array.from(availableOffers.keys());
+  const eventTypesTemplate = createEventTypesTemplate(type, types);
+  const citiesListTeplate = createCitiesListTemplate(availableDestinations);
   const timesTemplate = createTimesTemplate(timeStart, timeEnd);
   const costTemplate = createCostTemplate(cost);
-  const offersTemplate = createOffersTemplate(offers, type, offersByTypes);
+  const offersTemplate = createOffersTemplate(offers, type, availableOffers);
   const destinationTemplate = createDestinationTemplate(destination);
 
   return `<li class="trip-events__item">
@@ -114,7 +131,7 @@ const createAddEventForm = (event) => {
         <label class="event__label  event__type-output" for="event-destination-1">
           ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(city)}" list="destination-list-1" required>
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(name)}" list="destination-list-1" required>
         ${citiesListTeplate}
       </div>
         ${timesTemplate}
@@ -207,8 +224,8 @@ export default class AddEvent extends SmartView {
   _destinationChangeHandler(evt) {
     evt.preventDefault();
     const city = evt.target.value.toLowerCase();
-    const destination = destinationsByCities.get(city);
-    if (!destinationsByCities.has(city)) {
+    const destination = availableDestinations.find((item) => item.name === city);
+    if (!destination) {
       evt.target.setCustomValidity('Choose city from the list');
       return;
     }
@@ -280,8 +297,8 @@ export default class AddEvent extends SmartView {
     const type = this._data.type.toLowerCase();
     const eventOffers = this._data.offers;
     if (offer.checked) {
-      const availableOffers = offersByTypes.get(type);
-      const addedOffer = availableOffers.filter((item) => item.id === offer.id);
+      const newAvailableOffers = availableOffers.get(type);
+      const addedOffer = newAvailableOffers.filter((item) => item.id === offer.id);
       const newOffers = eventOffers.concat(addedOffer);
       this.updateData({
         offers: newOffers,
