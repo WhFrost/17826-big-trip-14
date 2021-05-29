@@ -1,6 +1,7 @@
 import AddEventFormView from '../view/add-event';
 import {render, RenderPosition, remove} from '../utils/render';
-import {UserAction, UpdateType} from '../const';
+import {UserAction, UpdateType, BLANK_EVENT} from '../const';
+import {offersModel, destinationsModel} from '../main';
 
 export default class EventNew {
   constructor(eventsListContainer, changeData) {
@@ -18,7 +19,11 @@ export default class EventNew {
     if (this._addEventFormComponent !== null) {
       return;
     }
-    this._addEventFormComponent = new AddEventFormView();
+
+    const availableOffers = offersModel.getOffers();
+    const availableDestinations = destinationsModel.getDestinations();
+
+    this._addEventFormComponent = new AddEventFormView(BLANK_EVENT, availableOffers, availableDestinations);
     this._addEventFormComponent.setAddFormSubmitClickHandler(this._handleAddFormSubmit);
     this._addEventFormComponent.setAddFormDeleteClickHandler(this._handleAddFormDeleteClick);
 

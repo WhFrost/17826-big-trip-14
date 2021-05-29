@@ -27,11 +27,11 @@ const addEventButtonElement = headerContainer.querySelector('.trip-main__event-a
 const tripNavComponent = new TripNavView();
 render(tripNavContainer, tripNavComponent, RenderPosition.BEFOREEND);
 
-const offersModel = new OffersModel();
+export const offersModel = new OffersModel();
 export const availableOffers = offersModel.getOffers();
 const eventsModel = new EventsModel();
 const filtersModel = new FilterModel();
-const destinationsModel = new DestinationsModel();
+export const destinationsModel = new DestinationsModel();
 export const availableDestinations = destinationsModel.getDestinations();
 
 const tripPresenter = new TripPresenter(tripBoardContainer, eventsModel, filtersModel, api);

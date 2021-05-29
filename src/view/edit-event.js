@@ -2,7 +2,6 @@ import he from 'he';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import SmartView from './smart';
-import {availableOffers, availableDestinations} from '../main';
 import {humanizeDate} from '../utils/event';
 
 const createEventTypesTemplate = (currentType, defaultTypes) => {
@@ -98,7 +97,7 @@ const createDestinationTemplate = (destination) => {
   return '';
 };
 
-const createEditEventForm = (event) => {
+const createEditEventForm = (event, availableOffers, availableDestinations) => {
   const {type, timeStart, timeEnd, cost, offers, destination, isSaving, isDisabled, isDeleting} = event;
   const {name} = event.destination;
   const types = Array.from(availableOffers.keys());
@@ -153,9 +152,11 @@ const createEditEventForm = (event) => {
 };
 
 export default class EditEvent extends SmartView {
-  constructor(event) {
+  constructor(event, availableOffers, availableDestinations) {
     super();
     this._data = EditEvent.parseEventToData(event);
+    this._availableOffers = availableOffers;
+    this._availableDestinations = availableDestinations;
     this._timeStartPicker = null;
     this._timeEndPicker = null;
 
@@ -174,7 +175,7 @@ export default class EditEvent extends SmartView {
     this._setTimeEndPicker();
   }
   getTemplate() {
-    return createEditEventForm(this._data);
+    return createEditEventForm(this._data, this._availableOffers, this._availableDestinations);
   }
 
   reset(event) {
@@ -241,8 +242,8 @@ export default class EditEvent extends SmartView {
   }
   _destinationChangeHandler(evt) {
     evt.preventDefault();
-    const city = evt.target.value.toLowerCase();
-    const destination = availableDestinations.find((item) => item.name === city);
+    const city = evt.target.value;
+    const destination = this._availableDestinations.find((item) => item.name === city);
     if (!destination) {
       evt.target.setCustomValidity('Choose city from the list');
       return;
@@ -314,7 +315,7 @@ export default class EditEvent extends SmartView {
     const type = this._data.type.toLowerCase();
     const eventOffers = this._data.offers;
     if (offer.checked) {
-      const newAvailableOffers = availableOffers.get(type);
+      const newAvailableOffers = this._availableOffers.get(type);
       const addedOffer = newAvailableOffers.filter((item) => item.title === offer.name);
       const newOffers = eventOffers.concat(addedOffer);
       this.updateData({

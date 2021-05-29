@@ -3,6 +3,7 @@ import EditEventFormView from '../view/edit-event';
 import {render, RenderPosition, replace, remove} from '../utils/render';
 import {UserAction, UpdateType} from '../const';
 import {isDatesEqual} from '../utils/event';
+import {offersModel, destinationsModel} from '../main';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -38,8 +39,11 @@ export default class Event {
     const prevEventComponent = this._eventComponent;
     const prevEditEventFormComponent = this._editEventFormComponent;
 
+    const availableOffers = offersModel.getOffers();
+    const availableDestinations = destinationsModel.getDestinations();
+
     this._eventComponent = new EventView(this._event);
-    this._editEventFormComponent = new EditEventFormView(this._event);
+    this._editEventFormComponent = new EditEventFormView(this._event, availableOffers, availableDestinations);
 
     this._eventComponent.setEditClickHandler(this._handleEditClick);
     this._eventComponent.setFavoriteClickHandler(this._handleFavoriteClick);
