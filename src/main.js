@@ -76,3 +76,7 @@ Promise.all([api.getDestinations(), api.getOffers(), api.getEvents()])
   });
 
 tripPresenter.init();
+
+window.addEventListener('load', () => {
+  navigator.serviceWorker.register('/sw.js');
+});
