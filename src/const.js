@@ -1,11 +1,10 @@
 import dayjs from 'dayjs';
-import {TYPES} from './mock/event';
 
 const COUNT_EVENT_FOR_EMPTY_LIST = 0;
 
 const BLANK_EVENT = {
   date: dayjs(),
-  type: TYPES[0],
+  type: 'taxi',
   timeStart: dayjs(),
   timeEnd: dayjs(),
   cost: '',
