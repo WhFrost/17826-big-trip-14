@@ -15,7 +15,7 @@ const getFormatedDuration = (duration) => {
   if (days < 1) {
     return hours + 'H ' + minutes + 'M';
   }
-  if (hours < 1) {
+  if (days < 1 && hours < 1) {
     return minutes + 'M';
   }
   return days + 'D ' + hours + 'H ' + minutes + 'M';

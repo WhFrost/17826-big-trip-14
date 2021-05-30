@@ -122,7 +122,7 @@ export default class Trip {
         break;
       case UserAction.DELETE_EVENT:
         this._eventPresenter[update.id].setViewState(EventPresenterViewState.DELETING);
-        this._api.addEvent(update).then(() => {
+        this._api.deleteEvent(update).then(() => {
           this._eventsModel.deleteEvent(updateType, update);
         }).catch(() => {
           this._eventPresenter[update.id].setViewState(EventPresenterViewState.ABORTING);

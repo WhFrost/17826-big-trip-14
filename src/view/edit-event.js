@@ -262,13 +262,13 @@ export default class EditEvent extends SmartView {
   _timeStartChangeHandler([userDate]) {
     this.updateData({
       timeStart: userDate,
-    });
+    }, true);
   }
 
   _timeEndChangeHandler([userDate]) {
     this.updateData({
       timeEnd: userDate,
-    });
+    }, true);
   }
 
   _setTimeStartPicker() {
@@ -279,6 +279,7 @@ export default class EditEvent extends SmartView {
     this._timeStartPicker = flatpickr(this.getElement().querySelector('#event-start-time-1'),
       {
         dateFormat: 'd/m/y H:i',
+        time_24hr: true,
         defaultDate: humanizeDate('DD/MM/YY HH:mm', this._data.timeStart),
         enableTime: true,
         maxDate: humanizeDate('DD/MM/YY HH:mm', this._data.timeEnd),
@@ -294,6 +295,7 @@ export default class EditEvent extends SmartView {
     this._timeEndPicker = flatpickr(this.getElement().querySelector('#event-end-time-1'),
       {
         dateFormat: 'd/m/y H:i',
+        time_24hr: true,
         defaultDate: humanizeDate('DD/MM/YY HH:mm', this._data.timeEnd),
         enableTime: true,
         minDate: humanizeDate('DD/MM/YY HH:mm', this._data.timeStart),
