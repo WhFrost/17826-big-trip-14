@@ -21,8 +21,8 @@ const getFormatedDuration = (duration) => {
   return days + 'D ' + hours + 'H ' + minutes + 'M';
 };
 
-const sortingEventsByDate = (a, b) => dayjs(a.date).diff(dayjs(b.date));
-const sortingEventsByTime = (a, b) => dayjs(b.duration).diff(dayjs(a.duration));
+const sortingEventsByDate = (a, b) => dayjs(a.timeStart).diff(dayjs(b.timeStart));
+const sortingEventsByTime = (a, b) => dayjs(b.timeEnd - b.timeStart).diff(dayjs(a.timeEnd - a.timeStart));
 const sortingEventsByPrice = (a, b) => b.cost - a.cost;
 
 const isDatesEqual = (dateA, dateB) => {
