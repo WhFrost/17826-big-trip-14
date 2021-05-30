@@ -1,17 +1,19 @@
 import dayjs from 'dayjs';
+const HOURS_IN_DAY = 24;
+const MINUTES_IN_HOURS = 60;
 
 const humanizeDate = (format, date) => {
   return dayjs(date).format(format);
 };
 
 const getDuration = (timeStart, timeEnd) => {
-  return dayjs(timeEnd).diff(timeStart, 'minute', true);
+  return dayjs(timeEnd).diff(timeStart, 'minute');
 };
 
 const getFormatedDuration = (duration) => {
-  const days = Math.trunc(duration / 24 / 60);
-  const hours = Math.trunc((duration / 60) % 24);
-  const minutes = Math.round(duration % 60);
+  const days = Math.floor(duration / HOURS_IN_DAY / MINUTES_IN_HOURS);
+  const hours = Math.floor((duration / MINUTES_IN_HOURS) % HOURS_IN_DAY);
+  const minutes = Math.round(duration % MINUTES_IN_HOURS);
   if (days < 1) {
     return hours + 'H ' + minutes + 'M';
   }

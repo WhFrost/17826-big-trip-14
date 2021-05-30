@@ -1,11 +1,9 @@
-import dayjs from 'dayjs';
-
 const COUNT_EVENT_FOR_EMPTY_LIST = 0;
 
 const BLANK_EVENT = {
   type: 'taxi',
-  timeStart: dayjs(),
-  timeEnd: dayjs(),
+  timeStart: new Date(),
+  timeEnd: new Date(),
   isFavorite: false,
   cost: '',
   offers: [],
