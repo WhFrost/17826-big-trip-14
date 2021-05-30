@@ -1,9 +1,11 @@
 import EventView from '../view/event';
 import EditEventFormView from '../view/edit-event';
 import {render, RenderPosition, replace, remove} from '../utils/render';
-import {UserAction, UpdateType} from '../const';
+import {UserAction, UpdateType, MessageWhenOffline} from '../const';
 import {isDatesEqual} from '../utils/event';
 import {offersModel, destinationsModel} from '../main';
+import {isOnline} from '../utils/common';
+import {toast} from '../utils/toast';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -123,6 +125,11 @@ export default class Event {
     }
   }
   _handleEditClick() {
+    if (!isOnline()) {
+      toast(MessageWhenOffline.EDIT_EVENT);
+      this.setViewState(State.ABORTING);
+      return;
+    }
     this._replaceEventToEditEventForm();
   }
   _handleEditFormClick() {
@@ -130,6 +137,12 @@ export default class Event {
     this._replaceEditEventFormToEvent();
   }
   _handleEditFormSubmit(event) {
+    if (!isOnline()) {
+      toast(MessageWhenOffline.SAVE_EVENT);
+      this.setViewState(State.ABORTING);
+      return;
+    }
+
     const isMinorUpdate = !isDatesEqual(this._event.timeStart, event.timeStart);
 
     this._changeData(
@@ -140,6 +153,12 @@ export default class Event {
     this._replaceEditEventFormToEvent();
   }
   _handleEditFormDeleteClick(event) {
+    if (!isOnline()) {
+      toast(MessageWhenOffline.DELETE_EVENT);
+      this.setViewState(State.ABORTING);
+      return;
+    }
+
     this._changeData(
       UserAction.DELETE_EVENT,
       UpdateType.MAJOR,

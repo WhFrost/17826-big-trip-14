@@ -4,7 +4,7 @@ import {humanizeDate} from '../utils/event';
 const createTripCities = (events) => {
   if (events.length >= 3) {
     return `<h1 class="trip-info__title">
-    ${events[0].destination.name + ' &mdash; ... &mdash; ' + events[events.length - 1].destination.name}
+    ${events[0].destination.name}&mdash; ... &mdash;${events[events.length - 1].destination.name}
     </h1>`;
   }
   if (events.length > 0 && events.length < 3) {

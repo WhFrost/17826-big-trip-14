@@ -47,6 +47,17 @@ const MenuItem = {
   STATISTICS: 'STATISTICS',
 };
 
+const MessageWhenOffline = {
+  DISCONNECT: 'Lost internet connection',
+  RECONNECT: 'Connection restored',
+  NEW_EVENT: 'You can\'t create new event offline',
+  EDIT_EVENT: 'You can\'t edit event offline',
+  SAVE_EVENT: 'You can\'t save event offline',
+  DELETE_EVENT: 'You can\'t delete event offline',
+};
+
+const TITLE_OFFLINE = ' [offlint]';
+
 export {
   COUNT_EVENT_FOR_EMPTY_LIST,
   BLANK_EVENT,
@@ -54,5 +65,7 @@ export {
   UserAction,
   UpdateType,
   FilterType,
-  MenuItem
+  MenuItem,
+  MessageWhenOffline,
+  TITLE_OFFLINE
 };
