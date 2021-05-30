@@ -249,9 +249,13 @@ export default class EditEvent extends SmartView {
       return;
     }
     evt.target.setCustomValidity('');
+
     this.updateData({
-      city: evt.target.value,
-      destination,
+      destination: {
+        name: destination.name,
+        description: destination.description,
+        pictures: destination.pictures,
+      },
     });
   }
 
