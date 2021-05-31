@@ -13,6 +13,7 @@ const toast = (message) => {
   toastItem.style.width = '50%';
   toastItem.style.top = '25%';
   toastItem.style.zIndex = '1000';
+  toastItem.style.margin = '0 auto';
   toastItem.style.left = '0';
   toastItem.style.right = '0';
   toastItem.style.textAlign = 'center';

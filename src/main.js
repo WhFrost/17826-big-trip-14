@@ -15,7 +15,7 @@ import Api from './api/api';
 import Store from './api/store.js';
 import Provider from './api/provider.js';
 
-const USER = 'White_Frost';
+const USER = 'Frost';
 const AUTHORIZATION = `Basic ${USER}`;
 const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
 const STORE_PREFIX = 'Big-trip-localstorage';
@@ -103,22 +103,22 @@ window.addEventListener('online', () => {
   apiWithProvider.sync();
   toast(MessageWhenOffline.RECONNECT);
 
-  if (!offersModel.getOffers().length || !destinationsModel.getDestinations().length) {
-    Promise.all([apiWithProvider.getDestinations(), apiWithProvider.getOffers()])
-      .then(([destinations, offers]) => {
-        destinationsModel.setDestinations(destinations);
-        offersModel.setOffers(offers);
-        tripInfoPresenter.destroy();
-        tripInfoPresenter.init();
-      })
-      .catch(() => {
-        destinationsModel.setDestinations([]);
-        offersModel.setOffers([]);
-        eventsModel.setEvents(UpdateType.INIT, []);
-        tripInfoPresenter.destroy();
-        tripInfoPresenter.init();
-      });
-  }
+  // if (!offersModel.getOffers().length || !destinationsModel.getDestinations().length) {
+  //   Promise.all([apiWithProvider.getDestinations(), apiWithProvider.getOffers()])
+  //     .then(([destinations, offers]) => {
+  //       destinationsModel.setDestinations(destinations);
+  //       offersModel.setOffers(offers);
+  //       tripInfoPresenter.destroy();
+  //       tripInfoPresenter.init();
+  //     })
+  //     .catch(() => {
+  //       destinationsModel.setDestinations([]);
+  //       offersModel.setOffers([]);
+  //       eventsModel.setEvents(UpdateType.INIT, []);
+  //       tripInfoPresenter.destroy();
+  //       tripInfoPresenter.init();
+  //     });
+  // }
 });
 
 window.addEventListener('offline', () => {

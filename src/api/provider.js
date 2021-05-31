@@ -2,8 +2,7 @@ import EventsModel from '../model/events';
 import {isOnline} from '../utils/common';
 
 const getSyncedEvents = (items) => {
-  return items.filter(({success}) => success)
-    .map(({payload}) => payload.event);
+  return items.filter(({success}) => success).map(({payload}) => payload.point);
 };
 
 const createStoreStructure = (items) => {
@@ -76,7 +75,7 @@ export default class Provider {
   }
 
   deleteEvent(event) {
-    if (isOnline(event)) {
+    if (isOnline()) {
       return this._api.deleteEvent(event)
         .then(() => this._store.removeItem(event.id));
     }
