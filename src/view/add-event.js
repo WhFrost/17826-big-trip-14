@@ -272,7 +272,7 @@ export default class AddEvent extends SmartView {
     this._timeStartPicker = flatpickr(this.getElement().querySelector('#event-start-time-1'),
       {
         dateFormat: 'd/m/y H:i',
-        time_24hr: true,
+        'time_24hr': true,
         defaultDate: humanizeDate('DD/MM/YY HH:mm', this._data.timeStart),
         enableTime: true,
         maxDate: humanizeDate('DD/MM/YY HH:mm', this._data.timeEnd),
@@ -288,7 +288,7 @@ export default class AddEvent extends SmartView {
     this._timeEndPicker = flatpickr(this.getElement().querySelector('#event-end-time-1'),
       {
         dateFormat: 'd/m/y H:i',
-        time_24hr: true,
+        'time_24hr': true,
         defaultDate: humanizeDate('DD/MM/YY HH:mm', this._data.timeEnd),
         enableTime: true,
         minDate: humanizeDate('DD/MM/YY HH:mm', this._data.timeStart),
