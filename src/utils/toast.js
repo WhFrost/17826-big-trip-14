@@ -18,7 +18,7 @@ const toast = (message) => {
   toastItem.style.right = '0';
   toastItem.style.textAlign = 'center';
   toastItem.style.padding = '20px';
-  toastItem.style.fontSize = '24px';
+  toastItem.style.fontSize = '26px';
   toastItem.style.backgroundColor = 'white';
   toastItem.style.border = '5px';
   toastItem.style.borderStyle = 'solid';
