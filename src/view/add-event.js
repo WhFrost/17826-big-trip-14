@@ -204,7 +204,7 @@ export default class AddEvent extends SmartView {
     this.getElement().querySelector('.event__type-list').addEventListener('change', this._typeChangeHandler);
     this.getElement().querySelector('.event__input--destination').addEventListener('change', this._destinationChangeHandler);
     this.getElement().querySelector('.event__input--price').addEventListener('input', this._costInputHandler);
-    this.getElement().querySelector('.event__available-offers').addEventListener('change', this._offersCheckHandler);
+    this.getElement().querySelector('.event__section--offers').addEventListener('change', this._offersCheckHandler);
   }
 
   static parseEventToData(event) {
