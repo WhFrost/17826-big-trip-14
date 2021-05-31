@@ -102,23 +102,6 @@ window.addEventListener('online', () => {
   document.title = document.title.replace(TITLE_OFFLINE, '');
   apiWithProvider.sync();
   toast(MessageWhenOffline.RECONNECT);
-
-  // if (!offersModel.getOffers().length || !destinationsModel.getDestinations().length) {
-  //   Promise.all([apiWithProvider.getDestinations(), apiWithProvider.getOffers()])
-  //     .then(([destinations, offers]) => {
-  //       destinationsModel.setDestinations(destinations);
-  //       offersModel.setOffers(offers);
-  //       tripInfoPresenter.destroy();
-  //       tripInfoPresenter.init();
-  //     })
-  //     .catch(() => {
-  //       destinationsModel.setDestinations([]);
-  //       offersModel.setOffers([]);
-  //       eventsModel.setEvents(UpdateType.INIT, []);
-  //       tripInfoPresenter.destroy();
-  //       tripInfoPresenter.init();
-  //     });
-  // }
 });
 
 window.addEventListener('offline', () => {
