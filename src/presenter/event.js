@@ -2,7 +2,7 @@ import EventView from '../view/event';
 import EditEventFormView from '../view/edit-event';
 import {render, RenderPosition, replace, remove} from '../utils/render';
 import {UserAction, UpdateType, MessageWhenOffline} from '../const';
-import {isDatesEqual} from '../utils/event';
+import {isDatesEqual, isPriceEqual} from '../utils/event';
 import {offersModel, destinationsModel} from '../main';
 import {isOnline} from '../utils/common';
 import {toast} from '../utils/toast';
@@ -143,7 +143,8 @@ export default class Event {
       return;
     }
 
-    const isMinorUpdate = !isDatesEqual(this._event.timeStart, event.timeStart);
+    const isMinorUpdate = !isDatesEqual(this._event.timeStart, event.timeStart) ||
+    isPriceEqual(this._event.price, event.price);
 
     this._changeData(
       UserAction.UPDATE_EVENT,

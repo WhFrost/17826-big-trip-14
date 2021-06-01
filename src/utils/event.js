@@ -30,12 +30,15 @@ const sortingEventsByPrice = (a, b) => b.cost - a.cost;
 const isDatesEqual = (dateA, dateB) => {
   return (dateA === null && dateB === null) ? true : dayjs(dateA).isSame(dateB, 'D');
 };
+const isPriceEqual = (priceA, priceB) => {
+  return (priceA === null && priceB === null) ? true : priceB === priceA;
+};
 
 const isEventWillBe = (event) => {
-  return dayjs().isBefore(event, 'D');
+  return dayjs().isBefore(event, 'second');
 };
 const isEventExpired = (event) => {
-  return dayjs().isAfter(event, 'D');
+  return dayjs().isAfter(event, 'second');
 
 };
 
@@ -47,6 +50,7 @@ export {
   sortingEventsByTime,
   sortingEventsByPrice,
   isDatesEqual,
+  isPriceEqual,
   isEventWillBe,
   isEventExpired
 };
