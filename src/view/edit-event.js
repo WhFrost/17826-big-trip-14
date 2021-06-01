@@ -97,7 +97,15 @@ const createDestinationTemplate = (destination) => {
   return '';
 };
 
-const createEditEventForm = (event, availableOffers, availableDestinations) => {
+const createRollUpButton = (isAddForm, isDisabled) => {
+  if (isAddForm) {
+    return '';
+  }
+  return `<button class="event__rollup-btn" ${isDisabled ? 'disabled' : ''} type="button">`;
+};
+
+const createEditEventForm = (event, availableOffers, availableDestinations, isAddForm) => {
+  console.log(isAddForm);
   const {type, timeStart, timeEnd, cost, offers, destination, isSaving, isDisabled, isDeleting} = event;
   const {name} = event.destination;
   const types = Array.from(availableOffers.keys());
@@ -107,6 +115,7 @@ const createEditEventForm = (event, availableOffers, availableDestinations) => {
   const costTemplate = createCostTemplate(cost);
   const offersTemplate = createOffersTemplate(offers, type, availableOffers);
   const destinationTemplate = createDestinationTemplate(destination);
+  const rollUpButton = createRollUpButton(isAddForm, isDisabled);
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -138,7 +147,7 @@ const createEditEventForm = (event, availableOffers, availableDestinations) => {
         ${costTemplate}
         <button class="event__save-btn  btn  btn--blue" ${isDisabled ? 'disabled' : ''} type="submit">${isSaving ? 'Saving...' : 'Save'}</button>
         <button class="event__reset-btn" ${isDisabled ? 'disabled' : ''} type="reset">${isDeleting ? 'Deleting' : 'Delete'}</button>
-        <button class="event__rollup-btn" ${isDisabled ? 'disabled' : ''} type="button">
+        ${rollUpButton}
     </header>
     <section class="event__details">
 
@@ -152,11 +161,12 @@ const createEditEventForm = (event, availableOffers, availableDestinations) => {
 };
 
 export default class EditEvent extends SmartView {
-  constructor(event, availableOffers, availableDestinations) {
+  constructor(event, availableOffers, availableDestinations, isAddForm = false) {
     super();
     this._data = EditEvent.parseEventToData(event);
     this._availableOffers = availableOffers;
     this._availableDestinations = availableDestinations;
+    this._isAddForm = isAddForm;
     this._timeStartPicker = null;
     this._timeEndPicker = null;
 
@@ -175,7 +185,23 @@ export default class EditEvent extends SmartView {
     this._setTimeEndPicker();
   }
   getTemplate() {
-    return createEditEventForm(this._data, this._availableOffers, this._availableDestinations);
+    return createEditEventForm(this._data, this._availableOffers, this._availableDestinations, this._isAddForm);
+  }
+
+  setEditFormClickHandler(callback) {
+    if (this._isAddForm) {
+      return;
+    }
+    this._callback.editClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editFormClickHandler);
+  }
+  setEditFormSubmitClickHandler(callback) {
+    this._callback.editFormSubmitClick = callback;
+    this.getElement().querySelector('form').addEventListener('submit', this._editFormSubmitClickHandler);
+  }
+  setEditFormDeleteClickHandler(callback) {
+    this._callback.editFormDeleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._editFormDeleteClickHandler);
   }
 
   reset(event) {
@@ -210,29 +236,6 @@ export default class EditEvent extends SmartView {
     this.getElement().querySelector('.event__section--offers').addEventListener('change', this._offersCheckHandler);
   }
 
-  static parseEventToData(event) {
-    return Object.assign({},
-      event,
-      {
-        isDisabled: false,
-        isSaving: false,
-        isDeleting: false,
-      });
-  }
-  static parseDataToEvent(data) {
-    data = Object.assign({}, data);
-
-    delete data.isDisabled;
-    delete data.isSaving;
-    delete data.isDeleting;
-
-    return data;
-  }
-
-  _editFormClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.editClick(EditEvent.parseDataToEvent(this._data));
-  }
   _typeChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({
@@ -335,6 +338,10 @@ export default class EditEvent extends SmartView {
       }, true);
     }
   }
+  _editFormClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editClick(EditEvent.parseDataToEvent(this._data));
+  }
   _editFormSubmitClickHandler(evt) {
     evt.preventDefault();
     this._callback.editFormSubmitClick(EditEvent.parseDataToEvent(this._data));
@@ -344,16 +351,22 @@ export default class EditEvent extends SmartView {
     this._callback.editFormDeleteClick(EditEvent.parseDataToEvent(this._data));
   }
 
-  setEditFormClickHandler(callback) {
-    this._callback.editClick = callback;
-    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editFormClickHandler);
+  static parseEventToData(event) {
+    return Object.assign({},
+      event,
+      {
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
   }
-  setEditFormSubmitClickHandler(callback) {
-    this._callback.editFormSubmitClick = callback;
-    this.getElement().querySelector('form').addEventListener('submit', this._editFormSubmitClickHandler);
-  }
-  setEditFormDeleteClickHandler(callback) {
-    this._callback.editFormDeleteClick = callback;
-    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._editFormDeleteClickHandler);
+  static parseDataToEvent(data) {
+    data = Object.assign({}, data);
+
+    delete data.isDisabled;
+    delete data.isSaving;
+    delete data.isDeleting;
+
+    return data;
   }
 }
