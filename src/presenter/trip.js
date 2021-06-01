@@ -61,6 +61,7 @@ export default class Trip {
   createEvent() {
     this._currentSortType = SortTypes.DAY;
     this._filtersModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    Object.values(this._eventPresenter).forEach((presenter) => presenter.resetView());
     this._eventNewPresenter.init();
   }
 

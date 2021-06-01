@@ -94,20 +94,20 @@ Promise.all([apiWithProvider.getDestinations(), apiWithProvider.getOffers(), api
 
 tripPresenter.init();
 
-window.addEventListener('load', () => {
-  navigator.serviceWorker.register('/sw.js');
-});
+// window.addEventListener('load', () => {
+//   navigator.serviceWorker.register('/sw.js');
+// });
 
-window.addEventListener('online', () => {
-  document.title = document.title.replace(TITLE_OFFLINE, '');
-  apiWithProvider.sync();
-  toast(MessageWhenOffline.RECONNECT);
-});
+// window.addEventListener('online', () => {
+//   document.title = document.title.replace(TITLE_OFFLINE, '');
+//   apiWithProvider.sync();
+//   toast(MessageWhenOffline.RECONNECT);
+// });
 
-window.addEventListener('offline', () => {
-  toast(MessageWhenOffline.DISCONNECT);
-  document.title += TITLE_OFFLINE;
-});
+// window.addEventListener('offline', () => {
+//   toast(MessageWhenOffline.DISCONNECT);
+//   document.title += TITLE_OFFLINE;
+// });
 
 export {
   offersModel,
