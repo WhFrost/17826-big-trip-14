@@ -37,10 +37,10 @@ const addEventButtonElement = headerContainer.querySelector('.trip-main__event-a
 const tripNavComponent = new TripNavView();
 render(tripNavContainer, tripNavComponent, RenderPosition.BEFOREEND);
 
-export const offersModel = new OffersModel();
+const offersModel = new OffersModel();
 const eventsModel = new EventsModel();
 const filtersModel = new FilterModel();
-export const destinationsModel = new DestinationsModel();
+const destinationsModel = new DestinationsModel();
 
 const tripPresenter = new TripPresenter(tripBoardContainer, eventsModel, filtersModel, apiWithProvider);
 const filtersPresenter = new FiltersPresenter(tripFiltersContainer, filtersModel, eventsModel);
@@ -108,3 +108,8 @@ window.addEventListener('offline', () => {
   toast(MessageWhenOffline.DISCONNECT);
   document.title += TITLE_OFFLINE;
 });
+
+export {
+  offersModel,
+  destinationsModel
+};

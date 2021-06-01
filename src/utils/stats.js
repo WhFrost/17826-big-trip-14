@@ -20,20 +20,14 @@ const countDurationByType = (events, type) => {
   return eventsByType.map((item) => getDuration(item.timeStart, item.timeEnd)).reduce((accumulator, time) => accumulator + time);
 };
 
-const renderTypesChart = (typeCtx, events) => {
-  const types = events.map((event) => event.type);
-  const uniqueTypes = makeItemsUnique(types);
-  const eventsByTypeCounts = uniqueTypes.map((item) => countEventsByType(events, item));
-  const uniqueTypesUpperCase = uniqueTypes.map((item) => item.toUpperCase());
-  typeCtx.height = uniqueTypesUpperCase.length ? BAR_HEIGHT * uniqueTypesUpperCase.length : BAR_HEIGHT * DEFAULT_HEIGHT;
-
-  const typeChart = new Chart(typeCtx, {
+const getChart = (ctx, title, labels, data, formatter) => {
+  const typeChart = new Chart(ctx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels: uniqueTypesUpperCase,
+      labels: labels,
       datasets: [{
-        data: eventsByTypeCounts,
+        data: data,
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
@@ -50,12 +44,12 @@ const renderTypesChart = (typeCtx, events) => {
           color: '#000000',
           anchor: 'end',
           align: 'start',
-          formatter: (val) => `${val}x`,
+          formatter: formatter,
         },
       },
       title: {
         display: true,
-        text: 'TYPE',
+        text: `${title}`,
         fontColor: '#000000',
         fontSize: 23,
         position: 'left',
@@ -93,152 +87,50 @@ const renderTypesChart = (typeCtx, events) => {
   });
   return typeChart;
 };
+
+const renderTypesChart = (typeCtx, events) => {
+  const title = 'TYPE';
+  const types = events.map((event) => event.type);
+  const uniqueTypes = makeItemsUnique(types);
+  const eventsByTypeCounts = uniqueTypes.map((item) => countEventsByType(events, item));
+  const uniqueTypesUpperCase = uniqueTypes.map((item) => item.toUpperCase());
+  typeCtx.height = uniqueTypesUpperCase.length ? BAR_HEIGHT * uniqueTypesUpperCase.length : BAR_HEIGHT * DEFAULT_HEIGHT;
+  const getTypeFormat = () => {
+    return (val) => `${val}x`;
+  };
+  const typeFormat = getTypeFormat();
+
+  const typeChart = getChart(typeCtx, title, uniqueTypesUpperCase, eventsByTypeCounts, typeFormat);
+  return typeChart;
+};
 const renderMoneysChart = (moneyCtx, events) => {
+  const title = 'MONEY';
   const types = events.map((event) => event.type);
   const uniqueTypes = makeItemsUnique(types);
   const eventsByPriceCounts = uniqueTypes.map((item) => countCostByType(events, item));
   const uniqueTypesUpperCase = uniqueTypes.map((item) => item.toUpperCase());
   moneyCtx.height = uniqueTypesUpperCase.length ? BAR_HEIGHT * uniqueTypesUpperCase.length : BAR_HEIGHT * DEFAULT_HEIGHT;
+  const getMoneyFormat = () => {
+    return (val) => `€ ${val}`;
+  };
+  const moneyFormat = getMoneyFormat();
 
-  const moneyChart = new Chart(moneyCtx, {
-    plugins: [ChartDataLabels],
-    type: 'horizontalBar',
-    data: {
-      labels: uniqueTypesUpperCase,
-      datasets: [{
-        data: eventsByPriceCounts,
-        backgroundColor: '#ffffff',
-        hoverBackgroundColor: '#ffffff',
-        anchor: 'start',
-        barThickness: 44,
-        minBarLength: 50,
-      }],
-    },
-    options: {
-      plugins: {
-        datalabels: {
-          font: {
-            size: 13,
-          },
-          color: '#000000',
-          anchor: 'end',
-          align: 'start',
-          formatter: (val) => `€ ${val}`,
-        },
-      },
-      title: {
-        display: true,
-        text: 'MONEY',
-        fontColor: '#000000',
-        fontSize: 23,
-        position: 'left',
-      },
-      scales: {
-        yAxes: [{
-          ticks: {
-            fontColor: '#000000',
-            padding: 5,
-            fontSize: 13,
-          },
-          gridLines: {
-            display: false,
-            drawBorder: false,
-          },
-        }],
-        xAxes: [{
-          ticks: {
-            display: false,
-            beginAtZero: true,
-          },
-          gridLines: {
-            display: false,
-            drawBorder: false,
-          },
-        }],
-      },
-      legend: {
-        display: false,
-      },
-      tooltips: {
-        enabled: false,
-      },
-    },
-  });
-
+  const moneyChart = getChart(moneyCtx, title, uniqueTypesUpperCase, eventsByPriceCounts, moneyFormat);
   return moneyChart;
 };
 const renderDurationChart = (timeCtx, events) => {
+  const title = 'TIME-SPEND';
   const types = events.map((event) => event.type);
   const uniqueTypes = makeItemsUnique(types);
   const eventsByDurationCounts = uniqueTypes.map((item) => countDurationByType(events, item));
   const uniqueTypesUpperCase = uniqueTypes.map((item) => item.toUpperCase());
   timeCtx.height = uniqueTypesUpperCase.length ? BAR_HEIGHT * uniqueTypesUpperCase.length : BAR_HEIGHT * DEFAULT_HEIGHT;
+  const getTimeFormat = () => {
+    return (val) => `${getFormatedDuration(val)}`;
+  };
+  const moneyFormat = getTimeFormat();
 
-  const timeChart = new Chart(timeCtx, {
-    plugins: [ChartDataLabels],
-    type: 'horizontalBar',
-    data: {
-      labels: uniqueTypesUpperCase,
-      datasets: [{
-        data: eventsByDurationCounts,
-        backgroundColor: '#ffffff',
-        hoverBackgroundColor: '#ffffff',
-        anchor: 'start',
-        barThickness: 44,
-        minBarLength: 50,
-      }],
-    },
-    options: {
-      plugins: {
-        datalabels: {
-          font: {
-            size: 13,
-          },
-          color: '#000000',
-          anchor: 'end',
-          align: 'start',
-          formatter: (val) => `${getFormatedDuration(val)}`,
-        },
-      },
-      title: {
-        display: true,
-        text: 'TIME-SPEND',
-        fontColor: '#000000',
-        fontSize: 23,
-        position: 'left',
-      },
-      scales: {
-        yAxes: [{
-          ticks: {
-            fontColor: '#000000',
-            padding: 5,
-            fontSize: 13,
-          },
-          gridLines: {
-            display: false,
-            drawBorder: false,
-          },
-        }],
-        xAxes: [{
-          ticks: {
-            display: false,
-            beginAtZero: true,
-          },
-          gridLines: {
-            display: false,
-            drawBorder: false,
-          },
-        }],
-      },
-      legend: {
-        display: false,
-      },
-      tooltips: {
-        enabled: false,
-      },
-    },
-  });
-
+  const timeChart = getChart(timeCtx, title, uniqueTypesUpperCase, eventsByDurationCounts, moneyFormat);
   return timeChart;
 };
 

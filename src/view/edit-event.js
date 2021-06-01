@@ -105,7 +105,6 @@ const createRollUpButton = (isAddForm, isDisabled) => {
 };
 
 const createEditEventForm = (event, availableOffers, availableDestinations, isAddForm) => {
-  console.log(isAddForm);
   const {type, timeStart, timeEnd, cost, offers, destination, isSaving, isDisabled, isDeleting} = event;
   const {name} = event.destination;
   const types = Array.from(availableOffers.keys());
