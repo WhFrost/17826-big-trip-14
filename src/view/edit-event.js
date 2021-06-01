@@ -37,7 +37,7 @@ const createCostTemplate = (cost, isDisabled) => {
     <span class="visually-hidden">Price</span>
     &euro;
   </label>
-  <input class="event__input  event__input--price" id="event-price-1" type="text"
+  <input class="event__input  event__input--price" id="event-price-1" type="number" min="1"
   name="event-price" value="${cost}" required ${isDisabled ? 'disabled' : ''}>
 </div>`;
 };
@@ -77,22 +77,27 @@ const createOffersTemplate = (offers, type, offersByType, isDisabled) => {
 </section>`;
 };
 
-const createDestinationTemplate = (destination) => {
+const createPhotosTemplate = (photos) => {
+  if (photos.length > 0) {
+    return photos.map((photo) => {
+      return `<img class="event__photo" src=${photo.src} alt=${photo.description}>`;
+    }).join('');
+  }
+  return '';
+};
+
+const createDescriptionTemplate= (destination) => {
   const {description, pictures} = destination;
-  if (description.length > 0 || pictures.length > 0) {
-    let str = `<section class="event__section  event__section--destination">
-    <h3 class="event__section-title  event__section-title--destination">Destination</h3>`;
-    if (description.length > 0) {
-      str += `<p class="event__destination-description">${description}</p>`;
-    }
-    if (pictures.length > 0) {
-      str += pictures.reduce((total, current) =>
-        total + `<img class="event__photo" src="${current.src}.jpg" alt="${current.description}"></img>`, `<div class="event__photos-container">
-        <div class="event__photos-tape">`) +
-        `</div>
-        </div>`;
-    }
-    return str += '</section>';
+  if(description.length > 0) {
+    return `<section class="event__section  event__section--destination">
+    <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+    <p class="event__destination-description">${description}</p>
+    <div class="event__photos-container">
+      <div class="event__photos-tape">
+        ${createPhotosTemplate(pictures)}
+      </div>
+    </div>
+  </section>`;
   }
   return '';
 };
@@ -113,7 +118,7 @@ const createEditEventForm = (event, availableOffers, availableDestinations, isAd
   const timesTemplate = createTimesTemplate(timeStart, timeEnd);
   const costTemplate = createCostTemplate(cost);
   const offersTemplate = createOffersTemplate(offers, type, availableOffers);
-  const destinationTemplate = createDestinationTemplate(destination);
+  const destinationTemplate = createDescriptionTemplate(destination);
   const rollUpButton = createRollUpButton(isAddForm, isDisabled);
 
   return `<li class="trip-events__item">
@@ -307,15 +312,15 @@ export default class EditEvent extends SmartView {
   }
   _costInputHandler(evt) {
     evt.preventDefault();
-    const cost = evt.target.value;
+    const cost = parseInt(evt.target.value);
 
-    if (!Number.isInteger(parseInt(cost))) {
+    if (isNaN(cost)) {
       evt.target.setCustomValidity('Cost must be an integer');
       return;
     }
     evt.target.setCustomValidity('');
     this.updateData({
-      cost: parseInt(cost),
+      cost,
     }, true);
   }
   _offersCheckHandler(evt) {
